@@ -1,0 +1,127 @@
+export const languages = {
+  es: 'Español',
+  en: 'English',
+  pt: 'Português'
+};
+
+export const defaultLang = 'es';
+
+export const ui = {
+  es: {
+    'nav.blog': 'blog',
+    'nav.projects': 'proyectos',
+    'nav.home': 'inicio',
+    'hero.description': 'Desarrollador apasionado por crear experiencias digitales minimalistas y funcionales.',
+    'projects.title': 'Proyectos',
+    'projects.viewMore': 'Ver más proyectos →',
+    'projects.viewProject': 'Ver más →',
+    'projects.viewCode': 'Ver código →',
+    'projects.technologies': 'Tecnologías',
+    'projects.back': '← Inicio',
+    'blog.title': 'Historias',
+    'blog.viewMore': 'Ver más historias →',
+    'blog.back': '← Volver a historias',
+    'blog.noPosts': 'Aún no hay historias publicadas.',
+    'social.github': 'GitHub',
+    'social.linkedin': 'LinkedIn',
+    'social.instagram': 'Instagram',
+    'social.email': 'Correo',
+    'projects.1.title': 'Proyecto Minimalista',
+    'projects.1.description': 'Aplicación web con enfoque en simplicidad y usabilidad',
+    'projects.1.longDescription': 'Este proyecto demuestra habilidades en diseño minimalista y desarrollo web moderno, priorizando la experiencia del usuario.',
+    'projects.2.title': 'Sistema Interactivo',
+    'projects.2.description': 'Plataforma que combina arte digital y programación',
+    'projects.2.longDescription': 'Explorando la intersección entre el arte digital y la programación funcional, creando experiencias interactivas únicas.',
+    'projects.3.title': 'App de Gestión',
+    'projects.3.description': 'Herramienta para simplificar procesos complejos',
+    'projects.3.longDescription': 'Una aplicación minimalista que prioriza la usabilidad y la claridad en la presentación de información compleja.',
+    'projects.4.title': 'Portfolio Creativo',
+    'projects.4.description': 'Showcase de proyectos con diseño innovador',
+    'projects.4.longDescription': 'Un espacio digital que presenta trabajos creativos de manera elegante y accesible.',
+    'projects.5.title': 'API REST',
+    'projects.5.description': 'Backend escalable con arquitectura limpia',
+    'projects.5.longDescription': 'Servicio backend robusto diseñado con principios de arquitectura limpia y buenas prácticas.',
+  },
+  en: {
+    'nav.blog': 'blog',
+    'nav.projects': 'projects',
+    'nav.home': 'home',
+    'hero.description': 'Developer passionate about creating minimalist and functional digital experiences.',
+    'projects.title': 'Projects',
+    'projects.viewMore': 'View more projects →',
+    'projects.viewProject': 'View more →',
+    'projects.viewCode': 'View code →',
+    'projects.technologies': 'Technologies',
+    'projects.back': '← Home',
+    'blog.title': 'Stories',
+    'blog.viewMore': 'View more stories →',
+    'blog.back': '← Back to stories',
+    'blog.noPosts': 'No stories published yet.',
+    'social.github': 'GitHub',
+    'social.linkedin': 'LinkedIn',
+    'social.instagram': 'Instagram',
+    'social.email': 'Email',
+    'projects.1.title': 'Minimalist Project',
+    'projects.1.description': 'Web application focused on simplicity and usability',
+    'projects.1.longDescription': 'This project demonstrates skills in minimalist design and modern web development, prioritizing user experience.',
+    'projects.2.title': 'Interactive System',
+    'projects.2.description': 'Platform combining digital art and programming',
+    'projects.2.longDescription': 'Exploring the intersection between digital art and functional programming, creating unique interactive experiences.',
+    'projects.3.title': 'Management App',
+    'projects.3.description': 'Tool to simplify complex processes',
+    'projects.3.longDescription': 'A minimalist application that prioritizes usability and clarity in presenting complex information.',
+    'projects.4.title': 'Creative Portfolio',
+    'projects.4.description': 'Project showcase with innovative design',
+    'projects.4.longDescription': 'A digital space that presents creative work in an elegant and accessible way.',
+    'projects.5.title': 'REST API',
+    'projects.5.description': 'Scalable backend with clean architecture',
+    'projects.5.longDescription': 'Robust backend service designed with clean architecture principles and best practices.',
+  },
+  pt: {
+    'nav.blog': 'blog',
+    'nav.projects': 'projetos',
+    'nav.home': 'início',
+    'hero.description': 'Desenvolvedor apaixonado por criar experiências digitais minimalistas e funcionais.',
+    'projects.title': 'Projetos',
+    'projects.viewMore': 'Ver mais projetos →',
+    'projects.viewProject': 'Ver mais →',
+    'projects.viewCode': 'Ver código →',
+    'projects.technologies': 'Tecnologias',
+    'projects.back': '← Início',
+    'blog.title': 'Histórias',
+    'blog.viewMore': 'Ver mais histórias →',
+    'blog.back': '← Voltar para histórias',
+    'blog.noPosts': 'Ainda não há histórias publicadas.',
+    'social.github': 'GitHub',
+    'social.linkedin': 'LinkedIn',
+    'social.instagram': 'Instagram',
+    'social.email': 'Email',
+    'projects.1.title': 'Projeto Minimalista',
+    'projects.1.description': 'Aplicação web com foco em simplicidade e usabilidade',
+    'projects.1.longDescription': 'Este projeto demonstra habilidades em design minimalista e desenvolvimento web moderno, priorizando a experiência do usuário.',
+    'projects.2.title': 'Sistema Interativo',
+    'projects.2.description': 'Plataforma que combina arte digital e programação',
+    'projects.2.longDescription': 'Explorando a interseção entre arte digital e programação funcional, criando experiências interativas únicas.',
+    'projects.3.title': 'App de Gestão',
+    'projects.3.description': 'Ferramenta para simplificar processos complexos',
+    'projects.3.longDescription': 'Uma aplicação minimalista que prioriza a usabilidade e a clareza na apresentação de informações complexas.',
+    'projects.4.title': 'Portfólio Criativo',
+    'projects.4.description': 'Mostra de projetos com design inovador',
+    'projects.4.longDescription': 'Um espaço digital que apresenta trabalhos criativos de forma elegante e acessível.',
+    'projects.5.title': 'API REST',
+    'projects.5.description': 'Backend escalável com arquitetura limpa',
+    'projects.5.longDescription': 'Serviço backend robusto projetado com princípios de arquitetura limpa e boas práticas.',
+  }
+} as const;
+
+export function getLangFromUrl(url: URL) {
+  const [, lang] = url.pathname.split('/');
+  if (lang in ui) return lang as keyof typeof ui;
+  return defaultLang;
+}
+
+export function useTranslations(lang: keyof typeof ui) {
+  return function t(key: string) {
+    return ui[lang][key as keyof typeof ui[typeof defaultLang]] || key;
+  }
+}

@@ -1,0 +1,151 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import LanguageSelector from '../components/LanguageSelector';
+import { getLangFromUrl, useTranslations } from '../i18n/locales';
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Portfolio minimalista" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <nav class="navigation">
+      <div class="nav-links">
+        <a href={lang === 'es' ? '/' : `/${lang}`} class="nav-link">{t('nav.home')}</a>
+        <a href={lang === 'es' ? '/proyectos' : `/${lang}/proyectos`} class="nav-link">{t('nav.projects')}</a>
+        <a href={lang === 'es' ? '/blog' : `/${lang}/blog`} class="nav-link" transition:name="blog-button">{t('nav.blog')}</a>
+        <a href={lang === 'es' ? '/cv' : `/${lang}/cv`} class="nav-link">cv</a>
+      </div>
+      <LanguageSelector currentLang={lang} currentPath={Astro.url.pathname} client:load />
+    </nav>
+    <div class="decorative-line" transition:name="line"></div>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #F8F8F8;
+    --bg-dark: #F0F0F0;
+    --text: #000000;
+    --text-light: #333333;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body {
+    min-height: 100vh;
+    position: relative;
+    padding: 0 2rem;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    z-index: 100;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    transition: opacity 0.3s ease;
+  }
+
+  .nav-link:hover {
+    opacity: 0.7;
+  }
+
+  :global(.language-selector) {
+    background: var(--bg);
+    border: 1px solid var(--text);
+    border-radius: 4px;
+    color: var(--text);
+    padding: 0.4rem 0.8rem;
+    font-family: Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+    padding-right: 2rem;
+  }
+
+  :global(.language-selector:hover) {
+    background-color: var(--text);
+    color: var(--bg);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+
+  :global(.language-selector:focus) {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .decorative-line {
+    position: fixed;
+    top: 60px;
+    left: 30%;
+    right: 30%;
+    height: 1px;
+    background: var(--text);
+    z-index: 90;
+  }
+
+
+  main {
+    padding-top: 100px;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 0 1rem;
+    }
+
+    .decorative-line {
+      left: 20%;
+      right: 20%;
+    }
+  }
+</style>

@@ -1,0 +1,253 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SocialIcons from '../../components/SocialIcons.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/locales';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: 'en' } },
+    { params: { lang: 'pt' } }
+  ];
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const projects = [
+  {
+    id: "1",
+    title: t('projects.1.title'),
+    description: t('projects.1.description'),
+    link: lang === 'es' ? '/proyectos/1' : `/${lang}/proyectos/1`,
+    year: "2024"
+  },
+  {
+    id: "2", 
+    title: t('projects.2.title'),
+    description: t('projects.2.description'),
+    link: lang === 'es' ? '/proyectos/2' : `/${lang}/proyectos/2`,
+    year: "2024"
+  },
+  {
+    id: "3",
+    title: t('projects.3.title'),
+    description: t('projects.3.description'),
+    link: lang === 'es' ? '/proyectos/3' : `/${lang}/proyectos/3`,
+    year: "2023"
+  },
+  {
+    id: "4",
+    title: t('projects.4.title'),
+    description: t('projects.4.description'),
+    link: lang === 'es' ? '/proyectos/4' : `/${lang}/proyectos/4`,
+    year: "2023"
+  },
+  {
+    id: "5",
+    title: t('projects.5.title'),
+    description: t('projects.5.description'),
+    link: lang === 'es' ? '/proyectos/5' : `/${lang}/proyectos/5`,
+    year: "2023"
+  }
+];
+
+const visibleProjects = projects.slice(0, 4);
+---
+
+<Layout title="Portfolio">
+  <main>
+    <section class="hero">
+      <div class="profile-container" transition:name="profile">
+        <img 
+          src="https://via.placeholder.com/200" 
+          alt="Foto de perfil" 
+          class="profile-image"
+          transition:name="profile-image"
+        />
+        <h1 class="name" transition:name="name">Tu Nombre</h1>
+        <p class="description">{t('hero.description')}</p>
+        <SocialIcons className="hero-social" />
+      </div>
+    </section>
+
+    <section class="projects">
+      <h2 class="section-title">{t('projects.title')}</h2>
+      <div class="projects-grid">
+        {visibleProjects.map((project) => (
+          <article class="project-card">
+            <span class="project-year">{project.year}</span>
+            <h3 class="project-title">{project.title}</h3>
+            <p class="project-description">{project.description}</p>
+            <a href={project.link} class="project-link">{t('projects.viewProject')}</a>
+          </article>
+        ))}
+      </div>
+      {projects.length > 4 && (
+        <div class="view-more">
+          <a href={lang === 'es' ? '/proyectos' : `/${lang}/proyectos`} class="view-more-link">
+            {t('projects.viewMore')}
+          </a>
+        </div>
+      )}
+    </section>
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+  }
+
+  .hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  .profile-container {
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 2rem;
+    filter: grayscale(30%);
+  }
+
+  .name {
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    padding: 0 2rem;
+  }
+
+  :global(.hero-social) {
+    justify-content: center;
+  }
+
+  .projects {
+    padding: 4rem 0;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 3rem;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .project-card {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2rem;
+    border-radius: 4px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .project-year {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0.5rem 0;
+    color: var(--text);
+  }
+
+  .project-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin: 1rem 0;
+  }
+
+  .project-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    transition: opacity 0.3s ease;
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  .project-link:hover {
+    opacity: 0.7;
+  }
+
+  .view-more {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .view-more-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    transition: opacity 0.3s ease;
+    padding: 0.75rem 2rem;
+    border: 1px solid var(--text);
+    display: inline-block;
+    border-radius: 4px;
+  }
+
+  .view-more-link:hover {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    .name {
+      font-size: 2rem;
+    }
+
+    .description {
+      font-size: 1rem;
+      padding: 0 1rem;
+    }
+
+    .profile-image {
+      width: 150px;
+      height: 150px;
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

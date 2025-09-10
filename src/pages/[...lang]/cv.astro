@@ -1,0 +1,456 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/locales';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    { params: { lang: 'en' } },
+    { params: { lang: 'pt' } }
+  ];
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const cvData = {
+  es: {
+    name: "Tu Nombre",
+    title: "Desarrollador Full Stack",
+    email: "tu@email.com",
+    phone: "+34 123 456 789",
+    location: "Madrid, España",
+    summary: "Desarrollador apasionado con experiencia en crear soluciones web minimalistas y funcionales. Especializado en arquitecturas modernas y mejores prácticas de desarrollo.",
+    experience: [
+      {
+        position: "Desarrollador Senior",
+        company: "Empresa Tech",
+        period: "2022 - Presente",
+        description: [
+          "Desarrollo de aplicaciones web con React y Node.js",
+          "Implementación de arquitecturas escalables",
+          "Mentoría a desarrolladores junior"
+        ]
+      },
+      {
+        position: "Desarrollador Full Stack",
+        company: "Startup Innovadora",
+        period: "2020 - 2022",
+        description: [
+          "Creación de APIs RESTful",
+          "Desarrollo frontend con Vue.js",
+          "Optimización de rendimiento"
+        ]
+      }
+    ],
+    education: [
+      {
+        degree: "Ingeniería Informática",
+        institution: "Universidad Tecnológica",
+        period: "2016 - 2020"
+      }
+    ],
+    skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "PostgreSQL", "Docker", "Git"],
+    languages: [
+      { name: "Español", level: "Nativo" },
+      { name: "Inglés", level: "Avanzado" },
+      { name: "Portugués", level: "Intermedio" }
+    ]
+  },
+  en: {
+    name: "Your Name",
+    title: "Full Stack Developer",
+    email: "you@email.com",
+    phone: "+34 123 456 789",
+    location: "Madrid, Spain",
+    summary: "Passionate developer with experience creating minimalist and functional web solutions. Specialized in modern architectures and development best practices.",
+    experience: [
+      {
+        position: "Senior Developer",
+        company: "Tech Company",
+        period: "2022 - Present",
+        description: [
+          "Web application development with React and Node.js",
+          "Implementation of scalable architectures",
+          "Mentoring junior developers"
+        ]
+      },
+      {
+        position: "Full Stack Developer",
+        company: "Innovative Startup",
+        period: "2020 - 2022",
+        description: [
+          "RESTful API creation",
+          "Frontend development with Vue.js",
+          "Performance optimization"
+        ]
+      }
+    ],
+    education: [
+      {
+        degree: "Computer Engineering",
+        institution: "Tech University",
+        period: "2016 - 2020"
+      }
+    ],
+    skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "PostgreSQL", "Docker", "Git"],
+    languages: [
+      { name: "Spanish", level: "Native" },
+      { name: "English", level: "Advanced" },
+      { name: "Portuguese", level: "Intermediate" }
+    ]
+  },
+  pt: {
+    name: "Seu Nome",
+    title: "Desenvolvedor Full Stack",
+    email: "voce@email.com",
+    phone: "+34 123 456 789",
+    location: "Madrid, Espanha",
+    summary: "Desenvolvedor apaixonado com experiência em criar soluções web minimalistas e funcionais. Especializado em arquiteturas modernas e melhores práticas de desenvolvimento.",
+    experience: [
+      {
+        position: "Desenvolvedor Sênior",
+        company: "Empresa Tech",
+        period: "2022 - Presente",
+        description: [
+          "Desenvolvimento de aplicações web com React e Node.js",
+          "Implementação de arquiteturas escaláveis",
+          "Mentoria para desenvolvedores júnior"
+        ]
+      },
+      {
+        position: "Desenvolvedor Full Stack",
+        company: "Startup Inovadora",
+        period: "2020 - 2022",
+        description: [
+          "Criação de APIs RESTful",
+          "Desenvolvimento frontend com Vue.js",
+          "Otimização de desempenho"
+        ]
+      }
+    ],
+    education: [
+      {
+        degree: "Engenharia da Computação",
+        institution: "Universidade Tecnológica",
+        period: "2016 - 2020"
+      }
+    ],
+    skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "PostgreSQL", "Docker", "Git"],
+    languages: [
+      { name: "Espanhol", level: "Nativo" },
+      { name: "Inglês", level: "Avançado" },
+      { name: "Português", level: "Intermediário" }
+    ]
+  }
+};
+
+const cv = cvData[lang as keyof typeof cvData];
+---
+
+<Layout title="CV">
+  <div class="cv-container">
+    <div class="cv-actions">
+      <button onclick="window.print()" class="action-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/>
+        </svg>
+        {lang === 'es' ? 'Imprimir' : lang === 'pt' ? 'Imprimir' : 'Print'}
+      </button>
+      <a href={`/cv-${lang}.pdf`} download class="action-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        PDF
+      </a>
+    </div>
+
+    <main class="cv">
+      <header class="cv-header">
+        <h1 class="cv-name">{cv.name}</h1>
+        <p class="cv-title">{cv.title}</p>
+        <div class="cv-contact">
+          <span>{cv.email}</span>
+          <span>•</span>
+          <span>{cv.phone}</span>
+          <span>•</span>
+          <span>{cv.location}</span>
+        </div>
+      </header>
+
+      <section class="cv-section">
+        <h2>{lang === 'es' ? 'Resumen' : lang === 'pt' ? 'Resumo' : 'Summary'}</h2>
+        <p>{cv.summary}</p>
+      </section>
+
+      <section class="cv-section">
+        <h2>{lang === 'es' ? 'Experiencia' : lang === 'pt' ? 'Experiência' : 'Experience'}</h2>
+        {cv.experience.map((job) => (
+          <div class="experience-item">
+            <div class="experience-header">
+              <h3>{job.position}</h3>
+              <span class="period">{job.period}</span>
+            </div>
+            <p class="company">{job.company}</p>
+            <ul>
+              {job.description.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+
+      <section class="cv-section">
+        <h2>{lang === 'es' ? 'Educación' : lang === 'pt' ? 'Educação' : 'Education'}</h2>
+        {cv.education.map((edu) => (
+          <div class="education-item">
+            <div class="education-header">
+              <h3>{edu.degree}</h3>
+              <span class="period">{edu.period}</span>
+            </div>
+            <p class="institution">{edu.institution}</p>
+          </div>
+        ))}
+      </section>
+
+      <section class="cv-section">
+        <h2>{lang === 'es' ? 'Habilidades' : lang === 'pt' ? 'Habilidades' : 'Skills'}</h2>
+        <div class="skills-list">
+          {cv.skills.map((skill) => (
+            <span class="skill-tag">{skill}</span>
+          ))}
+        </div>
+      </section>
+
+      <section class="cv-section">
+        <h2>{lang === 'es' ? 'Idiomas' : lang === 'pt' ? 'Idiomas' : 'Languages'}</h2>
+        <div class="languages-list">
+          {cv.languages.map((language) => (
+            <div class="language-item">
+              <span class="language-name">{language.name}</span>
+              <span class="language-level">{language.level}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .cv-container {
+    max-width: 800px;
+    margin: 100px auto 4rem;
+    padding: 0 2rem;
+  }
+
+  .cv-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--text);
+    color: var(--text);
+    font-family: Georgia, serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: opacity 0.3s ease;
+  }
+
+  .action-btn:hover {
+    opacity: 0.7;
+  }
+
+  .cv {
+    background: white;
+    padding: 3rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .cv-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .cv-name {
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .cv-title {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+  }
+
+  .cv-contact {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .cv-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .cv-section h2 {
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    color: var(--text);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.5rem;
+  }
+
+  .cv-section p {
+    line-height: 1.6;
+    color: var(--text-light);
+  }
+
+  .experience-item,
+  .education-item {
+    margin-bottom: 1.5rem;
+  }
+
+  .experience-header,
+  .education-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.25rem;
+  }
+
+  .experience-header h3,
+  .education-header h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .period {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  .company,
+  .institution {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .experience-item ul {
+    margin-left: 1.5rem;
+    color: var(--text-light);
+  }
+
+  .experience-item li {
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .skill-tag {
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .languages-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .language-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .language-name {
+    color: var(--text);
+  }
+
+  .language-level {
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  @media print {
+    .cv-actions {
+      display: none;
+    }
+
+    .cv-container {
+      margin: 0;
+      padding: 0;
+    }
+
+    .cv {
+      box-shadow: none;
+      padding: 2rem;
+    }
+
+    .navigation {
+      display: none;
+    }
+
+    .decorative-line {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cv {
+      padding: 2rem 1.5rem;
+    }
+
+    .cv-name {
+      font-size: 2rem;
+    }
+
+    .cv-contact {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .cv-contact span:nth-child(even) {
+      display: none;
+    }
+
+    .experience-header,
+    .education-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

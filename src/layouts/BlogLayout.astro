@@ -1,0 +1,202 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import LanguageSelector from '../components/LanguageSelector';
+import { getLangFromUrl, useTranslations } from '../i18n/locales';
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Blog minimalista" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <ViewTransitions />
+  </head>
+  <body class="blog-layout">
+    <nav class="navigation">
+      <a href={lang === 'es' ? '/' : `/${lang}`} class="blog-link" transition:name="blog-button">{t('nav.home')}</a>
+      <LanguageSelector currentLang={lang} currentPath={Astro.url.pathname} client:load />
+    </nav>
+    <div class="decorative-line" transition:name="line"></div>
+    
+    <div class="blog-container">
+      <aside class="blog-sidebar">
+        <div class="profile-container" transition:name="profile">
+          <img 
+            src="https://via.placeholder.com/150" 
+            alt="Foto de perfil" 
+            class="profile-image"
+            transition:name="profile-image"
+          />
+          <h1 class="name" transition:name="name">Tu Nombre</h1>
+        </div>
+      </aside>
+      
+      <main class="blog-content">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #F8F8F8;
+    --bg-dark: #F0F0F0;
+    --text: #000000;
+    --text-light: #333333;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .blog-layout {
+    min-height: 100vh;
+    position: relative;
+    padding: 0;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 20px;
+    right: 2rem;
+    z-index: 100;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  :global(.language-selector) {
+    background: transparent;
+    border: 1px solid var(--text);
+    color: var(--text);
+    padding: 0.25rem 0.5rem;
+    font-family: Georgia, serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.language-selector:hover) {
+    opacity: 0.7;
+  }
+
+  .blog-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    transition: opacity 0.3s ease;
+  }
+
+  .blog-link:hover {
+    opacity: 0.7;
+  }
+
+  .decorative-line {
+    position: fixed;
+    top: 60px;
+    left: 30%;
+    right: 30%;
+    height: 1px;
+    background: var(--text);
+    z-index: 90;
+  }
+
+  .blog-container {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .blog-sidebar {
+    display: none;
+  }
+
+  .profile-container {
+    display: none;
+  }
+
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    filter: grayscale(30%);
+  }
+
+  .name {
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+
+  .blog-content {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 2rem 3rem 2rem;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 1024px) {
+    .decorative-line {
+      left: 20%;
+      right: 20%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .decorative-line-vertical {
+      display: none;
+    }
+
+    .blog-container {
+      flex-direction: column;
+    }
+
+    .blog-sidebar {
+      width: 100%;
+      position: relative;
+      height: auto;
+      padding: 80px 2rem 2rem 2rem;
+    }
+
+    .blog-content {
+      width: 100%;
+      margin-left: 0;
+      padding: 2rem;
+    }
+
+    .profile-image {
+      width: 120px;
+      height: 120px;
+    }
+
+    .name {
+      font-size: 1.5rem;
+    }
+  }
+</style>
