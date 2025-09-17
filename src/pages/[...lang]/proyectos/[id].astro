@@ -23,18 +23,34 @@ const { projectId } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
+const projectYears = {
+  "1": "2024",
+  "2": "2024-2025",
+  "3": "2024",
+  "4": "2024",
+  "5": "2024"
+};
+
+const projectTechs = t(`projects.${projectId}.techs`);
+const technologies = projectTechs ? projectTechs.split(', ') : [];
+
+const projectLinks = {
+  "1": null,
+  "2": "https://github.com/thsergitox",
+  "3": "https://github.com/thsergitox",
+  "4": null,
+  "5": "https://github.com/thsergitox"
+};
+
 const project = {
   id: projectId,
   title: t(`projects.${projectId}.title`),
   description: t(`projects.${projectId}.longDescription`),
-  technologies: ["Astro", "TypeScript", "CSS"],
-  year: projectId === "1" || projectId === "2" ? "2024" : "2023",
-  images: [
-    "https://via.placeholder.com/800x600",
-    "https://via.placeholder.com/800x600"
-  ],
-  link: "https://ejemplo.com",
-  github: `https://github.com/usuario/proyecto${projectId}`
+  technologies: technologies,
+  year: projectYears[projectId],
+  images: [],
+  link: null,
+  github: projectLinks[projectId]
 };
 ---
 

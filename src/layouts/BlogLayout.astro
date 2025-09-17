@@ -1,7 +1,7 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import LanguageSelector from '../components/LanguageSelector';
-import { getLangFromUrl, useTranslations } from '../i18n/locales';
+import { ViewTransitions } from "astro:transitions";
+import LanguageSelector from "../components/LanguageSelector";
+import { getLangFromUrl, useTranslations } from "../i18n/locales";
 
 export interface Props {
   title: string;
@@ -25,24 +25,29 @@ const t = useTranslations(lang);
   </head>
   <body class="blog-layout">
     <nav class="navigation">
-      <a href={lang === 'es' ? '/' : `/${lang}`} class="blog-link" transition:name="blog-button">{t('nav.home')}</a>
-      <LanguageSelector currentLang={lang} currentPath={Astro.url.pathname} client:load />
+      <a href={lang === "es" ? "/" : `/${lang}`} class="blog-link"
+        >{t("nav.home")}</a
+      >
+      <LanguageSelector
+        currentLang={lang}
+        currentPath={Astro.url.pathname}
+        client:load
+      />
     </nav>
-    <div class="decorative-line" transition:name="line"></div>
-    
+    <div class="decorative-line"></div>
+
     <div class="blog-container">
       <aside class="blog-sidebar">
-        <div class="profile-container" transition:name="profile">
-          <img 
-            src="https://via.placeholder.com/150" 
-            alt="Foto de perfil" 
+        <div class="profile-container">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="Foto de perfil"
             class="profile-image"
-            transition:name="profile-image"
           />
-          <h1 class="name" transition:name="name">Tu Nombre</h1>
+          <h1 class="name">Tu Nombre</h1>
         </div>
       </aside>
-      
+
       <main class="blog-content">
         <slot />
       </main>
@@ -52,8 +57,8 @@ const t = useTranslations(lang);
 
 <style is:global>
   :root {
-    --bg: #F8F8F8;
-    --bg-dark: #F0F0F0;
+    --bg: #f8f8f8;
+    --bg-dark: #f0f0f0;
     --text: #000000;
     --text-light: #333333;
   }
@@ -80,7 +85,8 @@ const t = useTranslations(lang);
   .navigation {
     position: fixed;
     top: 20px;
-    right: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 100;
     display: flex;
     gap: 2rem;

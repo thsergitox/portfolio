@@ -27,28 +27,28 @@ const projects = [
     title: t('projects.2.title'),
     description: t('projects.2.description'),
     link: lang === 'es' ? '/proyectos/2' : `/${lang}/proyectos/2`,
-    year: "2024"
+    year: "2024-2025"
   },
   {
     id: "3",
     title: t('projects.3.title'),
     description: t('projects.3.description'),
     link: lang === 'es' ? '/proyectos/3' : `/${lang}/proyectos/3`,
-    year: "2023"
+    year: "2024"
   },
   {
     id: "4",
     title: t('projects.4.title'),
     description: t('projects.4.description'),
     link: lang === 'es' ? '/proyectos/4' : `/${lang}/proyectos/4`,
-    year: "2023"
+    year: "2024"
   },
   {
     id: "5",
     title: t('projects.5.title'),
     description: t('projects.5.description'),
     link: lang === 'es' ? '/proyectos/5' : `/${lang}/proyectos/5`,
-    year: "2023"
+    year: "2024"
   }
 ];
 
@@ -58,15 +58,18 @@ const visibleProjects = projects.slice(0, 4);
 <Layout title="Portfolio">
   <main>
     <section class="hero">
-      <div class="profile-container" transition:name="profile">
+      <div class="profile-container">
         <img 
           src="https://via.placeholder.com/200" 
           alt="Foto de perfil" 
           class="profile-image"
-          transition:name="profile-image"
         />
-        <h1 class="name" transition:name="name">Tu Nombre</h1>
+        <h1 class="name">{t('hero.name')}</h1>
         <p class="description">{t('hero.description')}</p>
+        <div class="education-info">
+          <p class="education">🎓 {t('hero.education')}</p>
+          <p class="exchange">✈️ {t('hero.exchange')}</p>
+        </div>
         <SocialIcons className="hero-social" />
       </div>
     </section>
@@ -135,8 +138,21 @@ const visibleProjects = projects.slice(0, 4);
     font-size: 1.1rem;
     line-height: 1.6;
     color: var(--text-light);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     padding: 0 2rem;
+  }
+
+  .education-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    color: var(--text-light);
+  }
+
+  .education, .exchange {
+    margin: 0;
   }
 
   :global(.hero-social) {

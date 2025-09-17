@@ -1,12 +1,12 @@
 ---
-import BlogLayout from '../../../layouts/BlogLayout.astro';
-import { getLangFromUrl, useTranslations } from '../../../i18n/locales';
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { getLangFromUrl, useTranslations } from "../../../i18n/locales";
 
 export function getStaticPaths() {
   return [
     { params: { lang: undefined } },
-    { params: { lang: 'en' } },
-    { params: { lang: 'pt' } }
+    { params: { lang: "en" } },
+    { params: { lang: "pt" } },
   ];
 }
 
@@ -14,17 +14,20 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 // Get all posts and filter by language
-const allPosts = await Astro.glob('../../../content/blog/**/*.md');
+const allPosts = await Astro.glob("../../../content/blog/**/*.md");
 const posts = allPosts.filter((post) => {
   const path = post.file;
-  if (lang === 'es') {
-    return !path.includes('/en/') && !path.includes('/pt/');
+  if (lang === "es") {
+    return !path.includes("/en/") && !path.includes("/pt/");
   }
   return path.includes(`/${lang}/`);
 });
 
 const sortedPosts = posts.sort((a, b) => {
-  return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
+  return (
+    new Date(b.frontmatter.date).getTime() -
+    new Date(a.frontmatter.date).getTime()
+  );
 });
 
 const visiblePosts = sortedPosts.slice(0, 4);
@@ -32,33 +35,52 @@ const visiblePosts = sortedPosts.slice(0, 4);
 
 <BlogLayout title="Blog">
   <div class="posts-list">
-    <h2 class="blog-title">{t('blog.title')}</h2>
-    
-    {visiblePosts.length > 0 ? (
-      visiblePosts.map((post) => (
-        <a href={lang === 'es' ? `/blog/${post.frontmatter.slug || 'post'}` : `/${lang}/blog/${post.frontmatter.slug || 'post'}`} class="post-link">
-          <article class="post-preview">
-            <time class="post-date">{new Date(post.frontmatter.date).toLocaleDateString(lang === 'es' ? 'es-ES' : lang === 'pt' ? 'pt-BR' : 'en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}</time>
-            <h3 class="post-title">{post.frontmatter.title}</h3>
-            <p class="post-excerpt">{post.frontmatter.excerpt}</p>
-          </article>
-        </a>
-      ))
-    ) : (
-      <p class="no-posts">{t('blog.noPosts')}</p>
-    )}
+    <h2 class="blog-title">{t("blog.title")}</h2>
 
-    {sortedPosts.length > 4 && (
-      <div class="view-more">
-        <a href={lang === 'es' ? '/blog/todas' : `/${lang}/blog/all`} class="view-more-link">
-          {t('blog.viewMore')}
-        </a>
-      </div>
-    )}
+    {
+      visiblePosts.length > 0 ? (
+        visiblePosts.map((post) => (
+          <a
+            href={
+              lang === "es"
+                ? `/blog/${post.frontmatter.slug || "post"}`
+                : `/${lang}/blog/${post.frontmatter.slug || "post"}`
+            }
+            class="post-link"
+          >
+            <article class="post-preview">
+              <time class="post-date">
+                {new Date(post.frontmatter.date).toLocaleDateString(
+                  lang === "es" ? "es-ES" : lang === "pt" ? "pt-BR" : "en-US",
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
+              </time>
+              <h3 class="post-title">{post.frontmatter.title}</h3>
+              <p class="post-excerpt">{post.frontmatter.excerpt}</p>
+            </article>
+          </a>
+        ))
+      ) : (
+        <p class="no-posts">{t("blog.noPosts")}</p>
+      )
+    }
+
+    {
+      sortedPosts.length > 4 && (
+        <div class="view-more">
+          <a
+            href={lang === "es" ? "/blog/todas" : `/${lang}/blog/all`}
+            class="view-more-link"
+          >
+            {t("blog.viewMore")}
+          </a>
+        </div>
+      )
+    }
   </div>
 </BlogLayout>
 
@@ -79,11 +101,10 @@ const visiblePosts = sortedPosts.slice(0, 4);
     display: block;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: opacity 0.2s ease;
   }
 
   .post-link:hover {
-    transform: translateX(-5px);
     opacity: 0.9;
   }
 
