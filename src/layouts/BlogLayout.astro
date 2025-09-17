@@ -25,9 +25,19 @@ const t = useTranslations(lang);
   </head>
   <body class="blog-layout">
     <nav class="navigation">
-      <a href={lang === "es" ? "/" : `/${lang}`} class="blog-link"
-        >{t("nav.home")}</a
-      >
+      <div class="nav-links">
+        <a href={lang === "es" ? "/" : `/${lang}`} class="nav-link"
+          >{t("nav.home")}</a
+        >
+        <a
+          href={lang === "es" ? "/proyectos" : `/${lang}/proyectos`}
+          class="nav-link">{t("nav.projects")}</a
+        >
+        <a href={lang === "es" ? "/blog" : `/${lang}/blog`} class="nav-link"
+          >{t("nav.blog")}</a
+        >
+        <a href={lang === "es" ? "/cv" : `/${lang}/cv`} class="nav-link">cv</a>
+      </div>
       <LanguageSelector
         currentLang={lang}
         currentPath={Astro.url.pathname}
@@ -87,28 +97,55 @@ const t = useTranslations(lang);
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4rem;
     z-index: 100;
+  }
+
+  .nav-links {
     display: flex;
     gap: 2rem;
-    align-items: center;
   }
 
   :global(.language-selector) {
-    background: transparent;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  :global(.lang-btn) {
+    background: var(--bg);
     border: 1px solid var(--text);
+    border-radius: 20px;
     color: var(--text);
-    padding: 0.25rem 0.5rem;
+    padding: 0.35rem 0.75rem;
     font-family: Georgia, serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
     cursor: pointer;
-    transition: opacity 0.3s ease;
+    transition: all 0.2s ease;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 400;
   }
 
-  :global(.language-selector:hover) {
-    opacity: 0.7;
+  :global(.lang-btn:hover) {
+    background-color: var(--text);
+    color: var(--bg);
+    transform: translateY(-1px);
   }
 
-  .blog-link {
+  :global(.lang-btn.active) {
+    background-color: var(--text);
+    color: var(--bg);
+  }
+
+  :global(.lang-btn:focus-visible) {
+    box-shadow: 0 0 0 2px var(--text);
+  }
+
+  .nav-link {
     color: var(--text);
     text-decoration: none;
     font-size: 1rem;
@@ -116,7 +153,7 @@ const t = useTranslations(lang);
     transition: opacity 0.3s ease;
   }
 
-  .blog-link:hover {
+  .nav-link:hover {
     opacity: 0.7;
   }
 
