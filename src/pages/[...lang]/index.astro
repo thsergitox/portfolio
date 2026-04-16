@@ -1,269 +1,391 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import SocialIcons from '../../components/SocialIcons.astro';
-import { getLangFromUrl, useTranslations } from '../../i18n/locales';
+import Layout from "../../layouts/Layout.astro";
+import SocialIcons from "../../components/SocialIcons.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/locales";
+import { getProfile } from "../../data/profile";
 
 export function getStaticPaths() {
   return [
     { params: { lang: undefined } },
-    { params: { lang: 'en' } },
-    { params: { lang: 'pt' } }
+    { params: { lang: "en" } },
+    { params: { lang: "pt" } },
   ];
 }
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-const projects = [
-  {
-    id: "1",
-    title: t('projects.1.title'),
-    description: t('projects.1.description'),
-    link: lang === 'es' ? '/proyectos/1' : `/${lang}/proyectos/1`,
-    year: "2024"
-  },
-  {
-    id: "2", 
-    title: t('projects.2.title'),
-    description: t('projects.2.description'),
-    link: lang === 'es' ? '/proyectos/2' : `/${lang}/proyectos/2`,
-    year: "2024-2025"
-  },
-  {
-    id: "3",
-    title: t('projects.3.title'),
-    description: t('projects.3.description'),
-    link: lang === 'es' ? '/proyectos/3' : `/${lang}/proyectos/3`,
-    year: "2024"
-  },
-  {
-    id: "4",
-    title: t('projects.4.title'),
-    description: t('projects.4.description'),
-    link: lang === 'es' ? '/proyectos/4' : `/${lang}/proyectos/4`,
-    year: "2024"
-  },
-  {
-    id: "5",
-    title: t('projects.5.title'),
-    description: t('projects.5.description'),
-    link: lang === 'es' ? '/proyectos/5' : `/${lang}/proyectos/5`,
-    year: "2024"
-  }
-];
-
-const visibleProjects = projects.slice(0, 4);
+const profile = getProfile(lang);
+const featuredProjects = profile.projects.slice(0, 4);
+const profileImage =
+  "https://media.licdn.com/dms/image/v2/D4E03AQFNd1CkPp5FOg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1695266233679?e=1778112000&v=beta&t=6am0sRqfvkTCRrH5uxbE3OcaFvICVz7jelgcskXZJx0";
 ---
 
 <Layout title="Portfolio">
-  <main>
+  <main transition:animate>
     <section class="hero">
       <div class="profile-container">
-        <img 
-          src="https://via.placeholder.com/200" 
-          alt="Foto de perfil" 
-          class="profile-image"
-        />
-        <h1 class="name">{t('hero.name')}</h1>
-        <p class="description">{t('hero.description')}</p>
-        <div class="education-info">
-          <p class="education">🎓 {t('hero.education')}</p>
-          <p class="exchange">✈️ {t('hero.exchange')}</p>
+        <img src={profileImage} alt={t("hero.name")} class="profile-image" />
+        <p class="eyebrow">{profile.metaTitle}</p>
+        <h1 class="name">{t("hero.name")}</h1>
+        <p class="headline">{profile.headline}</p>
+        <p class="description">{profile.summary}</p>
+        <div class="meta">
+          <span>{profile.location}</span>
+          <span>{profile.education[0].institution}</span>
+          <span>{profile.education[1].institution}</span>
         </div>
         <SocialIcons className="hero-social" />
       </div>
     </section>
 
-    <section class="projects">
-      <h2 class="section-title">{t('projects.title')}</h2>
-      <div class="projects-grid">
-        {visibleProjects.map((project) => (
-          <article class="project-card">
-            <span class="project-year">{project.year}</span>
-            <h3 class="project-title">{project.title}</h3>
-            <p class="project-description">{project.description}</p>
-            <a href={project.link} class="project-link">{t('projects.viewProject')}</a>
-          </article>
-        ))}
+    <section class="split-section">
+      <div class="section-block">
+        <h2 class="section-title">{t("home.experience")}</h2>
+        {
+          profile.experience.map((job) => (
+            <article class="detail-card">
+              <div class="card-heading">
+                <div>
+                  <h3>{job.role}</h3>
+                  <p>{job.company} · {job.location}</p>
+                </div>
+                <span>{job.period}</span>
+              </div>
+              <ul>
+                {job.bullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
+            </article>
+          ))
+        }
       </div>
-      {projects.length > 4 && (
-        <div class="view-more">
-          <a href={lang === 'es' ? '/proyectos' : `/${lang}/proyectos`} class="view-more-link">
-            {t('projects.viewMore')}
-          </a>
+
+      <div class="section-block">
+        <h2 class="section-title">{t("home.education")}</h2>
+        {
+          profile.education.map((item) => (
+            <article class="detail-card">
+              <div class="card-heading">
+                <div>
+                  <h3>{item.institution}</h3>
+                  <p>{item.program}</p>
+                </div>
+                <span>{item.period}</span>
+              </div>
+              <p class="detail-location">{item.location}</p>
+              <ul>
+                {item.bullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="projects">
+      <div class="section-header">
+        <h2 class="section-title">{t("projects.title")}</h2>
+        <a href={lang === "es" ? "/proyectos" : `/${lang}/proyectos`} class="view-more-link">
+          {t("projects.viewMore")}
+        </a>
+      </div>
+      <div class="projects-grid">
+        {
+          featuredProjects.map((project) => (
+            <article class="project-card">
+              <span class="project-year">{project.year}</span>
+              <h3 class="project-title">{project.title}</h3>
+              <p class="project-description">{project.summary}</p>
+              <p class="project-stack">{project.stack.join(" · ")}</p>
+              <a
+                href={lang === "es" ? `/proyectos/${project.id}` : `/${lang}/proyectos/${project.id}`}
+                class="project-link"
+              >
+                {t("projects.viewProject")}
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="split-section">
+      <div class="section-block">
+        <h2 class="section-title">{t("home.awards")}</h2>
+        <div class="awards-list">
+          {
+            profile.awards.map((award) => (
+              <article class="detail-card">
+                <div class="card-heading">
+                  <h3>{award.title}</h3>
+                  <span>{award.result}</span>
+                </div>
+                <ul>
+                  {award.bullets.map((bullet) => <li>{bullet}</li>)}
+                </ul>
+              </article>
+            ))
+          }
         </div>
-      )}
+      </div>
+
+      <div class="section-block">
+        <h2 class="section-title">{t("home.skills")}</h2>
+        <div class="skills-groups">
+          {
+            profile.skillGroups.map((group) => (
+              <article class="detail-card skill-card">
+                <h3>{group.label}</h3>
+                <div class="skill-tags">
+                  {group.items.map((item) => <span class="skill-tag">{item}</span>)}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
     </section>
   </main>
 </Layout>
 
 <style>
   main {
-    max-width: 1200px;
+    max-width: 1160px;
     margin: 0 auto;
     padding-bottom: 4rem;
   }
 
   .hero {
-    min-height: 70vh;
+    min-height: 68vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 0;
+    padding: 3rem 0 2rem;
   }
 
   .profile-container {
+    max-width: 760px;
     text-align: center;
-    max-width: 600px;
   }
 
   .profile-image {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 2rem;
-    filter: grayscale(30%);
+    margin-bottom: 1.5rem;
+    filter: grayscale(10%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .eyebrow {
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
   }
 
   .name {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .headline {
+    font-size: 1.3rem;
+    line-height: 1.5;
     color: var(--text);
     margin-bottom: 1rem;
   }
 
   .description {
-    font-size: 1.1rem;
-    line-height: 1.6;
+    font-size: 1.05rem;
+    line-height: 1.8;
     color: var(--text-light);
-    margin-bottom: 1.5rem;
-    padding: 0 2rem;
+    margin: 0 auto 1.5rem;
+    max-width: 680px;
   }
 
-  .education-info {
+  .meta {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
     margin-bottom: 2rem;
-    font-size: 1rem;
-    color: var(--text-light);
   }
 
-  .education, .exchange {
-    margin: 0;
+  .meta span {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
   }
 
   :global(.hero-social) {
     justify-content: center;
   }
 
-  .projects {
-    padding: 4rem 0;
+  .split-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+  }
+
+  .section-block {
+    min-width: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
   }
 
   .section-title {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 400;
-    margin-bottom: 3rem;
-    text-align: center;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
+  }
+
+  .detail-card,
+  .project-card {
+    background: rgba(255, 255, 255, 0.38);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .detail-card + .detail-card {
+    margin-top: 1rem;
+  }
+
+  .card-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-heading h3,
+  .project-title,
+  .skill-card h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  .card-heading p,
+  .detail-location,
+  .project-description,
+  .project-stack {
+    color: var(--text-light);
+  }
+
+  .detail-location {
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-card ul {
+    margin-left: 1.2rem;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  .projects {
+    padding: 2rem 0;
   }
 
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    padding: 0 1rem;
-    margin-bottom: 3rem;
-  }
-
-  .project-card {
-    background: rgba(255, 255, 255, 0.3);
-    padding: 2rem;
-    border-radius: 4px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .project-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
   }
 
   .project-year {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--text-light);
-    letter-spacing: 0.05em;
-  }
-
-  .project-title {
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin: 0.5rem 0;
-    color: var(--text);
+    letter-spacing: 0.08em;
   }
 
   .project-description {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text-light);
-    margin: 1rem 0;
+    line-height: 1.7;
+    margin: 0.75rem 0;
   }
 
-  .project-link {
-    color: var(--text);
-    text-decoration: none;
+  .project-stack {
     font-size: 0.9rem;
-    letter-spacing: 0.02em;
-    transition: opacity 0.3s ease;
-    display: inline-block;
-    margin-top: 0.5rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
   }
 
-  .project-link:hover {
-    opacity: 0.7;
-  }
-
-  .view-more {
-    text-align: center;
-    margin-top: 2rem;
-  }
-
+  .project-link,
   .view-more-link {
     color: var(--text);
     text-decoration: none;
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-    transition: opacity 0.3s ease;
-    padding: 0.75rem 2rem;
-    border: 1px solid var(--text);
-    display: inline-block;
-    border-radius: 4px;
   }
 
-  .view-more-link:hover {
-    opacity: 0.7;
+  .view-more-link {
+    font-size: 0.95rem;
+    border-bottom: 1px solid currentColor;
+  }
+
+  .awards-list,
+  .skills-groups {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .skill-tag {
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.35rem 0.7rem;
+    font-size: 0.88rem;
+    color: var(--text-light);
+  }
+
+  @media (max-width: 900px) {
+    .split-section,
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .section-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 
   @media (max-width: 768px) {
+    .hero {
+      min-height: auto;
+      padding-top: 2rem;
+    }
+
     .name {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
 
-    .description {
-      font-size: 1rem;
-      padding: 0 1rem;
+    .headline {
+      font-size: 1.1rem;
     }
 
-    .profile-image {
-      width: 150px;
-      height: 150px;
-    }
-
-    .projects-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
+    .card-heading {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

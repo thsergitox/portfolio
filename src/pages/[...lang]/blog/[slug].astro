@@ -1,37 +1,37 @@
 ---
-import BlogLayout from '../../../layouts/BlogLayout.astro';
-import { getLangFromUrl, useTranslations } from '../../../i18n/locales';
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { getLangFromUrl, useTranslations } from "../../../i18n/locales";
 
 export async function getStaticPaths() {
   const paths = [];
-  
+
   // Spanish posts
-  const esPosts = await Astro.glob('../../../content/blog/*.md');
-  esPosts.forEach(post => {
+  const esPosts = await Astro.glob("../../../content/blog/*.md");
+  esPosts.forEach((post) => {
     paths.push({
-      params: { lang: undefined, slug: post.frontmatter.slug || 'post' },
-      props: { post }
+      params: { lang: undefined, slug: post.frontmatter.slug || "post" },
+      props: { post },
     });
   });
-  
+
   // English posts
-  const enPosts = await Astro.glob('../../../content/blog/en/*.md');
-  enPosts.forEach(post => {
+  const enPosts = await Astro.glob("../../../content/blog/en/*.md");
+  enPosts.forEach((post) => {
     paths.push({
-      params: { lang: 'en', slug: post.frontmatter.slug || 'post' },
-      props: { post }
+      params: { lang: "en", slug: post.frontmatter.slug || "post" },
+      props: { post },
     });
   });
-  
+
   // Portuguese posts
-  const ptPosts = await Astro.glob('../../../content/blog/pt/*.md');
-  ptPosts.forEach(post => {
+  const ptPosts = await Astro.glob("../../../content/blog/pt/*.md");
+  ptPosts.forEach((post) => {
     paths.push({
-      params: { lang: 'pt', slug: post.frontmatter.slug || 'post' },
-      props: { post }
+      params: { lang: "pt", slug: post.frontmatter.slug || "post" },
+      props: { post },
     });
   });
-  
+
   return paths;
 }
 
@@ -42,22 +42,31 @@ const t = useTranslations(lang);
 ---
 
 <BlogLayout title={post.frontmatter.title}>
-  <article class="blog-post">
+  <article class="blog-post" transition:animate>
     <header class="post-header">
-      <time class="post-date">{new Date(post.frontmatter.date).toLocaleDateString(lang === 'es' ? 'es-ES' : lang === 'pt' ? 'pt-BR' : 'en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })}</time>
+      <time class="post-date"
+        >{
+          new Date(post.frontmatter.date).toLocaleDateString(
+            lang === "es" ? "es-ES" : lang === "pt" ? "pt-BR" : "en-US",
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }
+          )
+        }</time
+      >
       <h1 class="post-title">{post.frontmatter.title}</h1>
     </header>
-    
+
     <div class="post-content">
       <Content />
     </div>
-    
+
     <footer class="post-footer">
-      <a href={lang === 'es' ? '/blog' : `/${lang}/blog`} class="back-link">{t('blog.back')}</a>
+      <a href={lang === "es" ? "/blog" : `/${lang}/blog`} class="back-link"
+        >{t("blog.back")}</a
+      >
     </footer>
   </article>
 </BlogLayout>
@@ -150,7 +159,7 @@ const t = useTranslations(lang);
     padding: 0.2em 0.4em;
     border-radius: 3px;
     font-size: 0.9em;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
   }
 
   .post-content pre {

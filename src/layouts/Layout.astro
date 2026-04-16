@@ -1,7 +1,6 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import LanguageSelector from '../components/LanguageSelector';
-import { getLangFromUrl, useTranslations } from '../i18n/locales';
+import LanguageSelector from "../components/LanguageSelector";
+import { getLangFromUrl, useTranslations } from "../i18n/locales";
 
 export interface Props {
   title: string;
@@ -13,7 +12,7 @@ const t = useTranslations(lang);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Portfolio minimalista" />
@@ -21,17 +20,27 @@ const t = useTranslations(lang);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <ViewTransitions />
   </head>
   <body>
     <nav class="navigation">
       <div class="nav-links">
-        <a href={lang === 'es' ? '/' : `/${lang}`} class="nav-link">{t('nav.home')}</a>
-        <a href={lang === 'es' ? '/proyectos' : `/${lang}/proyectos`} class="nav-link">{t('nav.projects')}</a>
-        <a href={lang === 'es' ? '/blog' : `/${lang}/blog`} class="nav-link">{t('nav.blog')}</a>
-        <a href={lang === 'es' ? '/cv' : `/${lang}/cv`} class="nav-link">cv</a>
+        <a href={lang === "es" ? "/" : `/${lang}`} class="nav-link"
+          >{t("nav.home")}</a
+        >
+        <a
+          href={lang === "es" ? "/proyectos" : `/${lang}/proyectos`}
+          class="nav-link">{t("nav.projects")}</a
+        >
+        <a href={lang === "es" ? "/blog" : `/${lang}/blog`} class="nav-link"
+          >{t("nav.blog")}</a
+        >
+        <a href={lang === "es" ? "/cv" : `/${lang}/cv`} class="nav-link">cv</a>
       </div>
-      <LanguageSelector currentLang={lang} currentPath={Astro.url.pathname} client:load />
+      <LanguageSelector
+        currentLang={lang}
+        currentPath={Astro.url.pathname}
+        client:load
+      />
     </nav>
     <div class="decorative-line"></div>
     <slot />
@@ -40,8 +49,8 @@ const t = useTranslations(lang);
 
 <style is:global>
   :root {
-    --bg: #F8F8F8;
-    --bg-dark: #F0F0F0;
+    --bg: #f8f8f8;
+    --bg-dark: #f0f0f0;
     --text: #000000;
     --text-light: #333333;
   }
@@ -139,7 +148,6 @@ const t = useTranslations(lang);
     background: var(--text);
     z-index: 90;
   }
-
 
   main {
     padding-top: 100px;

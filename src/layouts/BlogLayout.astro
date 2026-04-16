@@ -1,5 +1,4 @@
 ---
-import { ViewTransitions } from "astro:transitions";
 import LanguageSelector from "../components/LanguageSelector";
 import { getLangFromUrl, useTranslations } from "../i18n/locales";
 
@@ -13,7 +12,7 @@ const t = useTranslations(lang);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Blog minimalista" />
@@ -21,7 +20,6 @@ const t = useTranslations(lang);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <ViewTransitions />
   </head>
   <body class="blog-layout">
     <nav class="navigation">
@@ -50,11 +48,11 @@ const t = useTranslations(lang);
       <aside class="blog-sidebar">
         <div class="profile-container">
           <img
-            src="https://via.placeholder.com/150"
+            src="https://media.licdn.com/dms/image/v2/D4E03AQFNd1CkPp5FOg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1695266233679?e=1778112000&v=beta&t=6am0sRqfvkTCRrH5uxbE3OcaFvICVz7jelgcskXZJx0"
             alt="Foto de perfil"
             class="profile-image"
           />
-          <h1 class="name">Tu Nombre</h1>
+          <h1 class="name">{t("hero.name")}</h1>
         </div>
       </aside>
 
