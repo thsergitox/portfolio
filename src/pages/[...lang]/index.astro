@@ -11,6 +11,7 @@ export function getStaticPaths() {
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const profile = getProfile(lang);
+const contactHref = localizePath(lang, '/contact');
 const latestPost = (await getCollection('blog', ({ data }) => data.locale === lang && !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0];
 const latestHref = latestPost
@@ -29,8 +30,8 @@ const latestHref = latestPost
         <p class="hero-role">{t('hero.role')}</p>
         <p class="hero-summary">{t('hero.summary')}</p>
         <div class="hero-actions">
-          <a href={localizePath(lang, '/cv')} class="primary-link">{t('hero.ctaPrimary')}</a>
-          <a href={localizePath(lang, '/blog')} class="secondary-link">{t('hero.ctaSecondary')}</a>
+          <a href={contactHref} class="primary-link">{t('cta.primary')}</a>
+          <a href={localizePath(lang, '/cv')} class="secondary-link">{t('hero.ctaPrimary')}</a>
         </div>
       </div>
       <div class="hero-photo-wrap">

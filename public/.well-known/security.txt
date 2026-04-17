@@ -1,0 +1,4 @@
+Contact: mailto:sergiopezoj@gmail.com
+Expires: 2027-04-17T00:00:00Z
+Preferred-Languages: es, en, pt
+Canonical: https://pezo.dev/.well-known/security.txt

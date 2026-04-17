@@ -8,6 +8,9 @@ Portfolio personal construido con Astro, con enfoque minimalista, soporte multii
 - Astro Content Collections para blog Markdown
 - i18n custom (es, en, pt)
 - CSS global en layout compartido
+- SEO: @astrojs/sitemap, hreflang, Open Graph, JSON-LD
+- Deploy: Vercel (adapter `@astrojs/vercel`)
+- Correo transaccional: Resend
 
 ## Lo que ya incluye
 
@@ -80,8 +83,27 @@ Ejecutar desde la raiz del proyecto:
   - `src/content/blog/en/`
   - `src/content/blog/pt/`
 
+## Contacto y leads
+
+- Modal global `ContactModal.astro` llamable desde cualquier parte con `href="#contacto"` (es), `#contact` (en), `#contato` (pt) o con `data-open-contact` en cualquier `<a>` o `<button>`.
+- CTA flotante sticky en todas las páginas.
+- Endpoint server: `src/pages/api/contact.ts` valida, aplica honeypot y envía vía Resend.
+- Variables en Vercel (`.env.example` incluido):
+  - `RESEND_API_KEY`
+  - `CONTACT_TO_EMAIL`
+  - `CONTACT_FROM_EMAIL`
+
+## SEO incluido
+
+- `astro.config.mjs` con `site` + `@astrojs/sitemap` multi-idioma (`es-PE`, `en-US`, `pt-BR`).
+- Componente `src/components/SEO.astro`: canonical, hreflang, Open Graph, Twitter cards.
+- JSON-LD `Person` + `WebSite` a nivel layout; `BlogPosting` por post.
+- `public/robots.txt`, `public/og-default.png` (1200x630).
+- Easter eggs: `public/humans.txt`, `public/.well-known/security.txt`, `public/llms.txt`.
+
 ## Checklist antes de publicar cambios
 
 1. `npm run astro -- check`
 2. `npm run build`
 3. Revisar manualmente rutas: `/`, `/en`, `/pt`, `/blog`, `/cv`
+4. Probar abrir modal (`/#contacto`) y envío del formulario en preview.
