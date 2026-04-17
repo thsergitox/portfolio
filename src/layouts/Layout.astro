@@ -1,22 +1,79 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
 import LanguageSelector from '../components/LanguageSelector.astro';
+import SEO from '../components/SEO.astro';
 import { getLangFromUrl, localizePath, useTranslations } from '../i18n/locales';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  publishedTime?: string;
+  tags?: string[];
+  noindex?: boolean;
 }
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const { title = t('site.title'), description = t('site.description') } = Astro.props;
+const {
+  title = t('seo.defaultTitle'),
+  description = t('seo.defaultDescription'),
+  image,
+  type = 'website',
+  publishedTime,
+  tags,
+  noindex,
+} = Astro.props;
 const currentPath = Astro.url.pathname;
 const navItems = [
   { key: 'nav.home', href: localizePath(lang, '/') },
   { key: 'nav.blog', href: localizePath(lang, '/blog') },
   { key: 'nav.cv', href: localizePath(lang, '/cv') },
 ] as const;
+
+const siteUrl = Astro.site ?? new URL('https://pezo.dev');
+const homeUrl = new URL(localizePath(lang, '/'), siteUrl).toString();
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Sergio Pezo',
+  alternateName: 'Sergio Sebastián Pezo Jiménez',
+  url: siteUrl.toString(),
+  image: new URL('/photo.jpeg', siteUrl).toString(),
+  jobTitle: 'Software Engineer',
+  description: t('seo.defaultDescription'),
+  sameAs: [
+    'https://github.com/thsergitox',
+    'https://linkedin.com/in/sergio-pezo',
+    'https://instagram.com/sergiopezoj',
+  ],
+  knowsAbout: [
+    'Backend engineering',
+    'Distributed systems',
+    'Applied AI',
+    'TypeScript',
+    'Python',
+    'Go',
+    'NestJS',
+    'FastAPI',
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Lima',
+    addressCountry: 'PE',
+  },
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Sergio Pezo · Software Engineering Studio',
+  url: homeUrl,
+  inLanguage: lang === 'es' ? 'es-PE' : lang === 'en' ? 'en-US' : 'pt-BR',
+  author: { '@type': 'Person', name: 'Sergio Pezo' },
+};
 ---
 
 <!doctype html>
@@ -24,9 +81,20 @@ const navItems = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SEO
+      title={title}
+      description={description}
+      lang={lang}
+      image={image}
+      type={type}
+      publishedTime={publishedTime}
+      tags={tags}
+      noindex={noindex}
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} is:inline />
     <ViewTransitions />
   </head>
   <body>

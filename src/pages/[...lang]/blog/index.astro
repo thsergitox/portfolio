@@ -13,7 +13,7 @@ const posts = (await getCollection('blog', ({ data }) => data.locale === lang &&
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<Layout title={`Blog · ${t('site.title')}`}>
+<Layout title={t('seo.blogTitle')} description={t('seo.blogDescription')}>
   <main class="page-shell blog-page">
     <section class="section-card blog-hero">
       <div class="glow"></div>
