@@ -47,7 +47,7 @@ export const ui = {
     'nav.blog': 'blog',
     'nav.cv': 'cv',
     'hero.kicker': 'software engineer · lima',
-    'hero.name': 'Sergio Sebastián Pezo Jiménez',
+    'hero.name': 'Sergio Pezo',
     'hero.role': 'I build software with taste, speed, and a calm obsession for solving real problems.',
     'hero.summary': 'I am a Computer Science student and backend engineer. I like turning complex ideas into products that feel clear, minimal, and human.',
     'hero.ctaPrimary': 'View CV',
