@@ -1,179 +1,102 @@
 ---
-import BlogLayout from "../../../layouts/BlogLayout.astro";
-import { getLangFromUrl, useTranslations } from "../../../i18n/locales";
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../../../i18n/locales';
 
 export function getStaticPaths() {
-  return [
-    { params: { lang: undefined } },
-    { params: { lang: "en" } },
-    { params: { lang: "pt" } },
-  ];
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }, { params: { lang: 'pt' } }];
 }
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-// Get all posts and filter by language
-const allPosts = await Astro.glob("../../../content/blog/**/*.md");
-const posts = allPosts.filter((post) => {
-  const path = post.file;
-  if (lang === "es") {
-    return !path.includes("/en/") && !path.includes("/pt/");
-  }
-  return path.includes(`/${lang}/`);
-});
-
-const sortedPosts = posts.sort((a, b) => {
-  return (
-    new Date(b.frontmatter.date).getTime() -
-    new Date(a.frontmatter.date).getTime()
-  );
-});
-
-const visiblePosts = sortedPosts.slice(0, 4);
+const posts = (await getCollection('blog', ({ data }) => data.locale === lang && !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BlogLayout title="Blog">
-  <div class="posts-list" transition:animate>
-    <h2 class="blog-title">{t("blog.title")}</h2>
+<Layout title={`Blog · ${t('site.title')}`}>
+  <main class="page-shell blog-page">
+    <section class="section-card blog-hero">
+      <div class="glow"></div>
+      <p class="mini-title">{t('blog.title')}</p>
+      <h1 class="gradient-title">{t('blog.description')}</h1>
+      <p>{t('blog.markdownBody')}</p>
+    </section>
 
-    {
-      visiblePosts.length > 0 ? (
-        visiblePosts.map((post) => (
-          <a
-            href={
-              lang === "es"
-                ? `/blog/${post.frontmatter.slug || "post"}`
-                : `/${lang}/blog/${post.frontmatter.slug || "post"}`
-            }
-            class="post-link"
-          >
-            <article class="post-preview">
-              <time class="post-date">
-                {new Date(post.frontmatter.date).toLocaleDateString(
-                  lang === "es" ? "es-ES" : lang === "pt" ? "pt-BR" : "en-US",
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
-              </time>
-              <h3 class="post-title">{post.frontmatter.title}</h3>
-              <p class="post-excerpt">{post.frontmatter.excerpt}</p>
+    <section class="post-grid">
+      {posts.length ? posts.map((post) => {
+        const href = lang === 'es' ? `/blog/${post.id.split('/').pop()?.replace(/\.md$/, '')}` : `/${lang}/blog/${post.id.split('/').pop()?.replace(/\.md$/, '')}`;
+        return (
+          <a href={href} class="post-link-card">
+            <article class="section-card post-card">
+              {post.data.cover && <img src={post.data.cover} alt={post.data.title} class="post-cover" />}
+              <div class="post-body">
+                <p class="post-date">{post.data.date.toLocaleDateString(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-PE', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <h2 class="gradient-title">{post.data.title}</h2>
+                <p>{post.data.description}</p>
+                <div class="post-footer">
+                  <div class="tag-list">{post.data.tags.map((tag) => <span class="pill">{tag}</span>)}</div>
+                  <span class="read-more">{t('blog.readMore')}</span>
+                </div>
+              </div>
             </article>
           </a>
-        ))
-      ) : (
-        <p class="no-posts">{t("blog.noPosts")}</p>
-      )
-    }
-
-    {
-      sortedPosts.length > 4 && (
-        <div class="view-more">
-          <a
-            href={lang === "es" ? "/blog/todas" : `/${lang}/blog/all`}
-            class="view-more-link"
-          >
-            {t("blog.viewMore")}
-          </a>
-        </div>
-      )
-    }
-  </div>
-</BlogLayout>
+        );
+      }) : <p>{t('blog.empty')}</p>}
+    </section>
+  </main>
+</Layout>
 
 <style>
-  .posts-list {
-    max-width: 600px;
+  .blog-page { display: grid; gap: 1.5rem; }
+  .blog-hero, .post-card { padding: 1.4rem; }
+  .blog-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(70,112,142,0.14), rgba(177,144,116,0.14)),
+      var(--surface);
   }
-
-  .blog-title {
-    font-size: 1.5rem;
-    font-weight: 400;
-    margin-bottom: 3rem;
-    letter-spacing: 0.05em;
-    color: var(--text);
+  .glow {
+    position: absolute;
+    inset: auto -50px -80px auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(70,112,142,0.18), transparent 70%);
+    pointer-events: none;
   }
-
-  .post-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.2s ease;
+  .blog-hero h1 { margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.7rem); max-width: 24ch; }
+  .blog-hero p:last-child { max-width: 58rem; margin: 0; }
+  .post-grid { display: grid; gap: 1.4rem; }
+  .post-link-card { text-decoration: none; display: block; }
+  .post-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.2rem;
+    overflow: hidden;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
   }
-
-  .post-link:hover {
-    opacity: 0.9;
+  .post-link-card:hover .post-card {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 55px rgba(70, 112, 142, 0.16);
+    border-color: rgba(70, 112, 142, 0.28);
   }
-
-  .post-preview {
-    margin-bottom: 3rem;
-    padding: 1.5rem;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.5);
-    transition: background 0.2s ease;
+  .post-cover {
+    width: 100%;
+    height: 100%;
+    min-height: 240px;
+    object-fit: cover;
+    border-radius: 20px;
+    background: linear-gradient(120deg, rgba(70,112,142,0.2), rgba(177,144,116,0.18));
   }
-
-  .post-link:hover .post-preview {
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .post-date {
-    font-size: 0.875rem;
-    color: var(--text-light);
-    letter-spacing: 0.02em;
-  }
-
-  .post-title {
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin: 0.5rem 0 1rem 0;
-    color: var(--text);
-  }
-
-  .post-excerpt {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text-light);
-  }
-
-  .no-posts {
-    color: var(--text-light);
-    font-style: italic;
-  }
-
-  .view-more {
-    text-align: center;
-    margin-top: 2rem;
-  }
-
-  .view-more-link {
-    color: var(--text);
-    text-decoration: none;
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-    transition: opacity 0.3s ease;
-    padding: 0.75rem 2rem;
-    border: 1px solid var(--text);
-    display: inline-block;
-    border-radius: 4px;
-  }
-
-  .view-more-link:hover {
-    opacity: 0.7;
-  }
-
-  @media (max-width: 768px) {
-    .blog-title {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-
-    .post-preview {
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-    }
+  .post-date { margin: 0; color: var(--blue); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.75rem; }
+  .post-body h2 { margin: 0.45rem 0 0.7rem; font-size: clamp(1.35rem, 2.2vw, 1.9rem); }
+  .post-body p { margin: 0; }
+  .post-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.2rem; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .read-more { color: var(--blue); font-weight: 600; }
+  @media (max-width: 760px) {
+    .post-card { grid-template-columns: 1fr; }
+    .post-cover { min-height: 200px; }
   }
 </style>

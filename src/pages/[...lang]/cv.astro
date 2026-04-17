@@ -1,334 +1,228 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import { getLangFromUrl } from "../../i18n/locales";
-import { getProfile, type Lang } from "../../data/profile";
+import Layout from '../../layouts/Layout.astro';
+import { getProfile } from '../../data';
+import { getLangFromUrl, useTranslations } from '../../i18n/locales';
 
 export function getStaticPaths() {
-  return [
-    { params: { lang: undefined } },
-    { params: { lang: "en" } },
-    { params: { lang: "pt" } },
-  ];
+  return [{ params: { lang: undefined } }, { params: { lang: 'en' } }, { params: { lang: 'pt' } }];
 }
 
-const lang = getLangFromUrl(Astro.url) as Lang;
-const cv = getProfile(lang);
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const profile = getProfile(lang);
 
-const labels = {
-  es: {
-    print: "Imprimir",
-    summary: "Perfil profesional",
-    experience: "Experiencia profesional",
-    education: "Educación",
-    projects: "Proyectos",
-    awards: "Hackathons y premios",
-    leadership: "Liderazgo y actividades",
-    skills: "Habilidades",
-    languages: "Idiomas",
-  },
-  en: {
-    print: "Print",
-    summary: "Professional profile",
-    experience: "Experience",
-    education: "Education",
-    projects: "Projects",
-    awards: "Hackathons and awards",
-    leadership: "Leadership and activities",
-    skills: "Skills",
-    languages: "Languages",
-  },
-  pt: {
-    print: "Imprimir",
-    summary: "Perfil profissional",
-    experience: "Experiência profissional",
-    education: "Educação",
-    projects: "Projetos",
-    awards: "Hackathons e prêmios",
-    leadership: "Liderança e atividades",
-    skills: "Habilidades",
-    languages: "Idiomas",
-  },
-}[lang];
+const contacts = [
+  { label: 'Email', href: `mailto:${profile.email}`, value: profile.email, icon: 'mail' },
+  { label: 'Phone', href: `tel:${profile.phone.replace(/\s+/g, '')}`, value: profile.phone, icon: 'phone' },
+  { label: 'LinkedIn', href: profile.linkedin, value: 'LinkedIn', icon: 'linkedin' },
+  { label: 'GitHub', href: profile.github, value: 'GitHub', icon: 'github' },
+  { label: 'Instagram', href: profile.instagram, value: 'Instagram', icon: 'instagram' },
+] as const;
+
+const icons = {
+  mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m5 7 7 6 7-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 4h3l1.1 3.7-1.8 1.8a15.6 15.6 0 0 0 5 5l1.8-1.8L20 14v3c0 .6-.4 1-1 1C10.7 18 6 13.3 6 7c0-.6.4-1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 8.5v9M6.5 5.8a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6ZM11 17.5v-5.2c0-1.5 1-2.6 2.4-2.6 1.4 0 2.1.9 2.1 2.6v5.2M11 11c.6-.9 1.5-1.4 2.8-1.4 2 0 3.7 1.3 3.7 4.2v3.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18c-4 1.2-4-2-5.5-2.4M14.5 20v-3.1a2.7 2.7 0 0 0-.8-2.2c2.6-.3 5.3-1.3 5.3-5.8A4.5 4.5 0 0 0 17.8 5a4.2 4.2 0 0 0-.1-3s-1 0-3 1.3a10.2 10.2 0 0 0-5.4 0C7.3 2 6.2 2 6.2 2A4.2 4.2 0 0 0 6 5a4.5 4.5 0 0 0-1.2 3.1c0 4.4 2.7 5.5 5.3 5.8a2.7 2.7 0 0 0-.8 2.2V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15" rx="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.3" cy="6.8" r="1" fill="currentColor"/></svg>',
+} as const;
 ---
 
-<Layout title="CV">
-  <main transition:animate>
-    <div class="cv-container">
-      <div class="cv-actions">
-        <button onclick="window.print()" class="action-btn">{labels.print}</button>
-        <a href="/cv.pdf" download class="action-btn">PDF</a>
+<Layout title={`CV · ${profile.name}`}>
+  <main class="page-shell cv-page">
+    <section class="section-card cv-hero">
+      <div>
+        <h1 class="gradient-title">{profile.name}</h1>
+        <p class="cv-location">{profile.location}</p>
+        <p class="stacked-text">{profile.summary}</p>
       </div>
+      <div class="hero-actions">
+        <a href="#cv-pdf-modal" class="pdf-link">{profile.pdfLabel}</a>
+      </div>
+    </section>
 
-      <header class="cv-header">
-        <h1 class="cv-name">Sergio Sebastián Pezo Jiménez</h1>
-        <p class="cv-title">{cv.metaTitle}</p>
-        <div class="cv-contact">
-          <span>{cv.location}</span>
-          <span>•</span>
-          <span>{cv.phone}</span>
-          <span>•</span>
-          <span>{cv.email}</span>
-          <span>•</span>
-          <span>{cv.linkedin}</span>
-          <span>•</span>
-          <span>{cv.github}</span>
+    <section class="contact-grid">
+      {contacts.map((item) => (
+        <a href={item.href} class="contact-card section-card" target={item.label === 'Email' || item.label === 'Phone' ? undefined : '_blank'} rel="noreferrer">
+          <span class="icon" set:html={icons[item.icon]} />
+          <span>{item.value}</span>
+        </a>
+      ))}
+    </section>
+
+    <section class="cv-grid">
+      <article class="section-card cv-card full-span">
+        <h2 class="gradient-title">{t('cv.experienceTitle')}</h2>
+        {profile.experience.map((job) => (
+          <div class="cv-item">
+            <div class="item-head">
+              <h3>{job.role} · {job.company}</h3>
+              <span>{job.period}</span>
+            </div>
+            <ul>{job.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+          </div>
+        ))}
+      </article>
+
+      <article class="section-card cv-card">
+        <h2 class="gradient-title">{t('cv.educationTitle')}</h2>
+        {profile.education.map((item) => (
+          <div class="cv-item">
+            <div class="item-head compact">
+              <h3>{item.place}</h3>
+              <span>{item.period}</span>
+            </div>
+            <p>{item.detail}</p>
+          </div>
+        ))}
+      </article>
+
+      <article class="section-card cv-card">
+        <h2 class="gradient-title">{t('cv.projectsTitle')}</h2>
+        <ul>{profile.projects.map((project) => <li>{project}</li>)}</ul>
+      </article>
+
+      <article class="section-card cv-card">
+        <h2 class="gradient-title">{t('cv.skillsTitle')}</h2>
+        <div class="group-list">
+          {profile.skillGroups.map((group) => (
+            <div class="skill-group">
+              <h3>{group.label}</h3>
+              <p>{group.items.join(' · ')}</p>
+            </div>
+          ))}
         </div>
-      </header>
+      </article>
 
-      <section class="cv-section">
-        <h2>{labels.summary}</h2>
-        <p>{cv.summary}</p>
-      </section>
+      <article class="section-card cv-card">
+        <h2 class="gradient-title">{t('cv.languagesTitle')}</h2>
+        <ul>{profile.spokenLanguages.map((item) => <li>{item}</li>)}</ul>
+      </article>
 
-      <section class="cv-section">
-        <h2>{labels.education}</h2>
-        {
-          cv.education.map((item) => (
-            <article class="entry">
-              <div class="entry-header">
-                <div>
-                  <h3>{item.institution}</h3>
-                  <p>{item.program}</p>
-                </div>
-                <span class="period">{item.period}</span>
-              </div>
-              <p class="meta">{item.location}</p>
-              <ul>
-                {item.bullets.map((bullet) => <li>{bullet}</li>)}
-              </ul>
-            </article>
-          ))
-        }
-      </section>
+      <article class="section-card cv-card">
+        <h2 class="gradient-title">{t('cv.awardsTitle')}</h2>
+        <ul>{profile.awards.map((award) => <li>{award}</li>)}</ul>
+      </article>
+    </section>
 
-      <section class="cv-section">
-        <h2>{labels.experience}</h2>
-        {
-          cv.experience.map((job) => (
-            <article class="entry">
-              <div class="entry-header">
-                <div>
-                  <h3>{job.role}</h3>
-                  <p>{job.company} · {job.location}</p>
-                </div>
-                <span class="period">{job.period}</span>
-              </div>
-              <ul>
-                {job.bullets.map((bullet) => <li>{bullet}</li>)}
-              </ul>
-            </article>
-          ))
-        }
-      </section>
-
-      <section class="cv-section">
-        <h2>{labels.projects}</h2>
-        {
-          cv.projects.map((project) => (
-            <article class="entry">
-              <div class="entry-header">
-                <div>
-                  <h3>{project.title}</h3>
-                  <p>{project.stack.join(", ")}</p>
-                </div>
-                <span class="period">{project.year}</span>
-              </div>
-              <p class="meta">{project.summary}</p>
-              <ul>
-                {project.details.map((detail) => <li>{detail}</li>)}
-              </ul>
-            </article>
-          ))
-        }
-      </section>
-
-      <section class="cv-section">
-        <h2>{labels.awards}</h2>
-        {
-          cv.awards.map((award) => (
-            <article class="entry">
-              <div class="entry-header">
-                <h3>{award.title}</h3>
-                <span class="period">{award.result}</span>
-              </div>
-              <ul>
-                {award.bullets.map((bullet) => <li>{bullet}</li>)}
-              </ul>
-            </article>
-          ))
-        }
-      </section>
-
-      <section class="cv-section">
-        <h2>{labels.leadership}</h2>
-        <ul>
-          {cv.leadership.map((item) => <li>{item}</li>)}
-        </ul>
-      </section>
-
-      <section class="cv-section">
-        <h2>{labels.skills}</h2>
-        <div class="skills-list">
-          {
-            cv.skillGroups.map((group) => (
-              <div class="skill-group">
-                <strong>{group.label}:</strong> {group.items.join(", ")}
-              </div>
-            ))
-          }
+    <div id="cv-pdf-modal" class="pdf-modal">
+      <a href="#" class="pdf-backdrop" aria-label={profile.pdfClose}></a>
+      <div class="pdf-window section-card">
+        <div class="pdf-toolbar">
+          <span>{profile.pdfLabel}</span>
+          <a href="#" class="pdf-close">{profile.pdfClose}</a>
         </div>
-      </section>
-
-      <section class="cv-section">
-        <h2>{labels.languages}</h2>
-        <div class="languages-list">
-          {
-            cv.languages.map((language) => (
-              <div class="language-item">
-                <span>{language.name}</span>
-                <span class="period">{language.level}</span>
-              </div>
-            ))
-          }
-        </div>
-      </section>
+        <iframe src="/cv.pdf#view=FitH" title="CV PDF" class="pdf-frame"></iframe>
+      </div>
     </div>
   </main>
 </Layout>
 
 <style>
-  .cv-container {
-    max-width: 900px;
-    margin: 100px auto 4rem;
-    padding: 0 2rem;
-  }
-
-  .cv-actions {
+  .cv-page { display: grid; gap: 1.2rem; }
+  .cv-hero, .cv-card { padding: 1.45rem; }
+  .cv-hero {
     display: flex;
-    justify-content: flex-end;
+    align-items: end;
+    justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 2rem;
   }
-
-  .action-btn {
-    border: 1px solid var(--text);
-    background: transparent;
-    color: var(--text);
-    padding: 0.55rem 1rem;
-    font-family: Georgia, serif;
+  .cv-hero h1 { margin: 0; font-size: clamp(2rem, 4.2vw, 3.25rem); }
+  .cv-location {
+    margin: 0.4rem 0 0;
+    color: var(--brown);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.76rem;
+  }
+  .stacked-text { margin: 0.9rem 0 0; max-width: 52rem; }
+  .pdf-link {
+    display: inline-flex;
     text-decoration: none;
-    cursor: pointer;
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    padding: 0.8rem 1.05rem;
+    border-radius: 999px;
   }
-
-  .cv-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.9rem;
   }
-
-  .cv-name {
-    font-size: 2.3rem;
-    font-weight: 400;
-    margin-bottom: 0.5rem;
-  }
-
-  .cv-title,
-  .cv-contact,
-  .meta {
-    color: var(--text-light);
-  }
-
-  .cv-contact {
+  .contact-card {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.65rem;
-    font-size: 0.92rem;
-    line-height: 1.6;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.95rem 1rem;
+    text-decoration: none;
+    transition: transform 180ms ease, border-color 180ms ease;
   }
-
-  .cv-section {
-    margin-bottom: 2rem;
+  .contact-card:hover { transform: translateY(-2px); border-color: rgba(70,112,142,0.28); }
+  .icon { width: 1.15rem; height: 1.15rem; color: var(--blue); display: inline-flex; }
+  .icon :global(svg) { width: 100%; height: 100%; }
+  .cv-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
   }
-
-  .cv-section h2 {
-    font-size: 1.2rem;
-    font-weight: 400;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-
-  .entry {
-    margin-bottom: 1.5rem;
-  }
-
-  .entry-header {
+  .full-span { grid-column: 1 / -1; }
+  .cv-card h2 { margin: 0 0 1rem; font-size: clamp(1.25rem, 1.8vw, 1.65rem); }
+  .cv-card ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.65rem; }
+  .cv-item + .cv-item { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .item-head {
     display: flex;
-    justify-content: space-between;
     align-items: baseline;
+    justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.45rem;
   }
-
-  .entry h3 {
-    font-size: 1.05rem;
-    font-weight: 400;
+  .item-head.compact { margin-bottom: 0.2rem; }
+  .item-head h3 { margin: 0; font-size: 1rem; }
+  .item-head span { color: rgba(45, 37, 32, 0.7); font-size: 0.95rem; }
+  .cv-item p { margin: 0; }
+  .group-list { display: grid; gap: 0.95rem; }
+  .skill-group h3 { margin: 0 0 0.3rem; font-size: 0.95rem; color: var(--blue); }
+  .skill-group p { margin: 0; }
+  .pdf-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
   }
-
-  .period {
-    color: var(--text-light);
-    white-space: nowrap;
+  .pdf-modal:target { display: flex; }
+  .pdf-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 18, 17, 0.58);
+    backdrop-filter: blur(8px);
   }
-
-  .entry ul,
-  .cv-section ul {
-    margin-left: 1.2rem;
-    color: var(--text-light);
-    line-height: 1.6;
+  .pdf-window {
+    position: relative;
+    z-index: 1;
+    width: min(1000px, calc(100vw - 2rem));
+    height: min(85vh, 860px);
+    padding: 0;
+    overflow: hidden;
+    background: rgba(251, 247, 244, 0.98);
   }
-
-  .skills-list {
-    display: grid;
-    gap: 0.65rem;
-    color: var(--text-light);
-    line-height: 1.6;
-  }
-
-  .languages-list {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .language-item {
+  .pdf-toolbar {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    padding-bottom: 0.5rem;
+    align-items: center;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--line);
   }
-
-  @media print {
-    .cv-actions,
-    .navigation,
-    .decorative-line {
-      display: none;
-    }
-
-    .cv-container {
-      margin: 0;
-      padding: 0;
-    }
+  .pdf-close { text-decoration: none; color: var(--blue); }
+  .pdf-frame { width: 100%; height: calc(100% - 56px); border: 0; }
+  @media (max-width: 920px) {
+    .contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cv-grid { grid-template-columns: 1fr; }
+    .cv-hero { flex-direction: column; align-items: start; }
   }
-
-  @media (max-width: 768px) {
-    .entry-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .cv-name {
-      font-size: 1.9rem;
-    }
+  @media (max-width: 560px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .item-head { flex-direction: column; align-items: start; gap: 0.3rem; }
   }
 </style>
