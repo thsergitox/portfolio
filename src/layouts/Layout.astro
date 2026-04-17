@@ -178,6 +178,7 @@ const navItems = [
 
   .mobile-menu {
     display: none;
+    gap: 0.55rem;
   }
 
   .mobile-trigger {
@@ -192,9 +193,28 @@ const navItems = [
 
   .mobile-trigger::-webkit-details-marker { display: none; }
   .mobile-panel {
-    margin-top: 0.7rem;
-    padding: 1rem;
+    margin-top: 0;
+    padding: 0 1rem;
     background: var(--surface-strong);
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    overflow: hidden;
+    transition: max-height 320ms ease, opacity 240ms ease, transform 320ms ease, padding 320ms ease;
+    pointer-events: none;
+  }
+
+  .mobile-menu[open] .mobile-panel {
+    max-height: 420px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 1rem;
+    pointer-events: auto;
+  }
+
+  .mobile-menu:not([open]) .mobile-panel {
+    border-color: transparent;
+    box-shadow: none;
   }
 
   .mobile-nav {
@@ -242,6 +262,6 @@ const navItems = [
     .site-header { padding-inline: 0.5rem; }
     .page-shell { width: min(100% - 1rem, 1100px); padding-top: 1.35rem; }
     .desktop-header { display: none; }
-    .mobile-menu { display: block; }
+    .mobile-menu { display: grid; }
   }
 </style>

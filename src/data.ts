@@ -1,13 +1,13 @@
 import type { Lang } from './i18n/locales';
 
 const shared = {
-  name: 'Sergio Sebastián Pezo Jiménez',
+  name: 'Sergio Pezo',
   location: 'Lima, Perú',
   email: 'sergiopezoj@gmail.com',
   phone: '+51 969 672 749',
   linkedin: 'https://linkedin.com/in/sergio-pezo',
   github: 'https://github.com/thsergitox',
-  instagram: 'https://instagram.com/thsergitox',
+  instagram: 'https://instagram.com/sergiopezoj',
 };
 
 const content = {
