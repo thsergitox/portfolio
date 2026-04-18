@@ -13,14 +13,6 @@ export function getStaticPaths() {
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const projectTypes = [
-  { value: 'backend', label: t('contact.projectTypeBackend') },
-  { value: 'automation', label: t('contact.projectTypeAutomation') },
-  { value: 'ai', label: t('contact.projectTypeAI') },
-  { value: 'consulting', label: t('contact.projectTypeConsulting') },
-  { value: 'other', label: t('contact.projectTypeOther') },
-];
-
 const whatsappNumber = '51969672749';
 const whatsappLink = `https://wa.me/${whatsappNumber}`;
 const emailLink = 'mailto:sergiopezoj@gmail.com';
@@ -30,15 +22,6 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
 <Layout title={t('seo.contactTitle')} description={t('seo.contactDescription')}>
-  {turnstileSiteKey && (
-    <script
-      is:inline
-      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-      async
-      defer
-    ></script>
-  )}
-
   <main class="page-shell contact-page">
     <section class="contact-grid">
       <aside class="section-card contact-intro accent-blue">
@@ -83,18 +66,9 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
             <input type="email" name="email" required autocomplete="email" placeholder={t('contact.emailPlaceholder')} />
           </label>
 
-          <label class="contact-field">
+          <label class="contact-field full">
             <span>{t('contact.company')}</span>
             <input type="text" name="company" autocomplete="organization" placeholder={t('contact.companyPlaceholder')} />
-          </label>
-
-          <label class="contact-field">
-            <span>{t('contact.projectType')}</span>
-            <select name="projectType" required>
-              {projectTypes.map((option) => (
-                <option value={option.value}>{option.label}</option>
-              ))}
-            </select>
           </label>
 
           <label class="contact-field full">
@@ -150,11 +124,63 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 </Layout>
 
 <script>
-  const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  const status = form?.querySelector<HTMLParagraphElement>('[data-status]') ?? null;
-  const submitBtn = form?.querySelector<HTMLButtonElement>('.contact-submit') ?? null;
+  const TURNSTILE_SCRIPT_ID = 'cf-turnstile-script';
+  const TURNSTILE_SCRIPT_SRC =
+    'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-  if (form && status && submitBtn) {
+  function ensureTurnstileScript(): Promise<void> {
+    if ((window as any).turnstile) return Promise.resolve();
+    const existing = document.getElementById(TURNSTILE_SCRIPT_ID) as HTMLScriptElement | null;
+    if (existing) {
+      return new Promise((resolve) => {
+        if ((window as any).turnstile) return resolve();
+        existing.addEventListener('load', () => resolve(), { once: true });
+      });
+    }
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.id = TURNSTILE_SCRIPT_ID;
+      script.src = TURNSTILE_SCRIPT_SRC;
+      script.async = true;
+      script.defer = true;
+      script.addEventListener('load', () => resolve(), { once: true });
+      script.addEventListener('error', () => reject(new Error('turnstile_load_failed')), {
+        once: true,
+      });
+      document.head.appendChild(script);
+    });
+  }
+
+  function renderTurnstileWidgets() {
+    const turnstile = (window as any).turnstile;
+    if (!turnstile || typeof turnstile.render !== 'function') return;
+    document
+      .querySelectorAll<HTMLElement>('.cf-turnstile:not([data-rendered])')
+      .forEach((el) => {
+        const sitekey = el.dataset.sitekey;
+        if (!sitekey) return;
+        try {
+          const widgetId = turnstile.render(el, {
+            sitekey,
+            theme: el.dataset.theme || 'auto',
+            size: el.dataset.size || 'normal',
+          });
+          el.setAttribute('data-rendered', 'true');
+          if (typeof widgetId === 'string') el.setAttribute('data-widget-id', widgetId);
+        } catch (err) {
+          console.warn('[contact] turnstile render failed', err);
+        }
+      });
+  }
+
+  function setupContactForm() {
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    if (!form || form.dataset.bound === 'true') return;
+    const status = form.querySelector<HTMLParagraphElement>('[data-status]');
+    const submitBtn = form.querySelector<HTMLButtonElement>('.contact-submit');
+    if (!status || !submitBtn) return;
+    form.dataset.bound = 'true';
+
     const sendLabel = submitBtn.dataset.sendLabel ?? 'Send';
     const sendingLabel = submitBtn.dataset.sendingLabel ?? 'Sending…';
     const successMsg = status.dataset.success ?? '';
@@ -213,6 +239,18 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
       }
     });
   }
+
+  function initContactPage() {
+    if (!document.getElementById('contact-form')) return;
+    setupContactForm();
+    const hasWidget = document.querySelector('.cf-turnstile');
+    if (!hasWidget) return;
+    ensureTurnstileScript()
+      .then(() => renderTurnstileWidgets())
+      .catch((err) => console.warn('[contact] turnstile setup failed', err));
+  }
+
+  document.addEventListener('astro:page-load', initContactPage);
 </script>
 
 <style>

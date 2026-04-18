@@ -25,14 +25,6 @@ function escapeHtml(value: string) {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const PROJECT_LABEL: Record<string, string> = {
-  backend: 'Backend / APIs',
-  automation: 'Automation & integrations',
-  ai: 'Applied AI',
-  consulting: 'Technical consulting',
-  other: 'Other',
-};
-
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 async function verifyTurnstile(token: string, secret: string, remoteIp?: string | null) {
@@ -75,7 +67,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const name = sanitize(payload.name, 120);
   const email = sanitize(payload.email, 200);
   const company = sanitize(payload.company, 160);
-  const projectType = sanitize(payload.projectType, 40);
   const message = sanitize(payload.message, 4000);
   const locale = sanitize(payload.locale, 10) || 'es';
 
@@ -120,7 +111,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
 
   const resend = new Resend(apiKey);
-  const projectLabel = PROJECT_LABEL[projectType] ?? 'Other';
 
   const subject = `Nuevo lead · ${name}${company ? ' · ' + company : ''}`;
   const html = `
@@ -129,7 +119,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
       <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
       ${company ? `<p><strong>Empresa:</strong> ${escapeHtml(company)}</p>` : ''}
-      <p><strong>Tipo de proyecto:</strong> ${escapeHtml(projectLabel)}</p>
       <p><strong>Idioma:</strong> ${escapeHtml(locale)}</p>
       <hr style="border:0;border-top:1px solid #e3dad5;margin:18px 0" />
       <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
@@ -140,7 +129,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     `Nombre: ${name}`,
     `Email: ${email}`,
     company ? `Empresa: ${company}` : null,
-    `Tipo: ${projectLabel}`,
     `Idioma: ${locale}`,
     '',
     message,
