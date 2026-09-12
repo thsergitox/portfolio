@@ -83,6 +83,7 @@ export const ui = {
     'cv.awardsTitle': 'Hackathons y premios',
     'cv.skillsTitle': 'Stack',
     'cv.languagesTitle': 'Idiomas',
+    'cv.leadershipTitle': 'Liderazgo y actividades',
   },
   en: {
     'site.title': 'Sergio Pezo — Portfolio',
@@ -159,6 +160,7 @@ export const ui = {
     'cv.awardsTitle': 'Hackathons & awards',
     'cv.skillsTitle': 'Stack',
     'cv.languagesTitle': 'Languages',
+    'cv.leadershipTitle': 'Leadership & activities',
   },
   pt: {
     'site.title': 'Sergio Pezo — Portfolio',
@@ -235,6 +237,7 @@ export const ui = {
     'cv.awardsTitle': 'Hackathons e prêmios',
     'cv.skillsTitle': 'Stack',
     'cv.languagesTitle': 'Idiomas',
+    'cv.leadershipTitle': 'Liderança e atividades',
   },
 } as const;
 
