@@ -1,0 +1,26 @@
+<script>
+  import mermaid from 'mermaid';
+  import { renderMermaidBlocks } from '../features/blog/mermaid-renderer.ts';
+
+  async function initializeMermaid() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#EEE5DA',
+        primaryTextColor: '#2D2520',
+        primaryBorderColor: '#46708E',
+        lineColor: '#6F5542',
+        secondaryColor: '#F7F4EE',
+        tertiaryColor: '#DDE7EC',
+      },
+      flowchart: { curve: reduceMotion ? 'linear' : 'basis' },
+    });
+    await renderMermaidBlocks(document, (id, source) => mermaid.render(id, source));
+  }
+
+  initializeMermaid();
+  document.addEventListener('astro:page-load', initializeMermaid);
+</script>
