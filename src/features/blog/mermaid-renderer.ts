@@ -1,7 +1,9 @@
 export type MermaidRender = (id: string, source: string) => Promise<{ svg: string }>;
 
 export async function renderMermaidBlocks(root: ParentNode, render: MermaidRender): Promise<void> {
-  const blocks = Array.from(root.querySelectorAll<HTMLElement>('pre > code.language-mermaid'));
+  const blocks = Array.from(root.querySelectorAll<HTMLElement>(
+    'pre[data-language="mermaid"] > code, pre > code.language-mermaid',
+  ));
 
   await Promise.all(blocks.map(async (code, index) => {
     const pre = code.parentElement;
