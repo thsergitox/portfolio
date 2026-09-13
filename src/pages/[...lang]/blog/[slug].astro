@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import MermaidRenderer from '../../../components/MermaidRenderer.astro';
 import { getLangFromUrl, localizePath, useTranslations } from '../../../i18n/locales';
 
 export async function getStaticPaths() {
@@ -12,6 +13,23 @@ const { post } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const { Content } = await render(post);
+const tableOfContents = {
+  es: [
+    ['Por qué NestJS', '#por-qué-nestjs'], ['El problema', '#el-problema-con-websockets'],
+    ['Arquitectura', '#la-arquitectura'], ['Flujo completo', '#el-flujo-completo'],
+    ['Middleware y guard', '#middleware-y-guard-no-compiten'], ['Mejoras', '#lo-que-mejoraría'],
+  ],
+  en: [
+    ['Why NestJS', '#why-nestjs'], ['The problem', '#the-websocket-problem'],
+    ['Architecture', '#the-architecture'], ['Complete flow', '#the-complete-flow'],
+    ['Middleware and guards', '#middleware-and-guards-do-not-compete'], ['Improvements', '#what-i-would-improve'],
+  ],
+  pt: [
+    ['Por que NestJS', '#por-que-nestjs'], ['O problema', '#o-problema-com-websockets'],
+    ['Arquitetura', '#a-arquitetura'], ['Fluxo completo', '#o-fluxo-completo'],
+    ['Middleware e guard', '#middleware-e-guard-não-competem'], ['Melhorias', '#o-que-eu-melhoraria'],
+  ],
+}[lang];
 
 const siteUrl = Astro.site ?? new URL('https://pezo.dev');
 const postUrl = new URL(Astro.url.pathname, siteUrl).toString();
@@ -49,21 +67,28 @@ const blogPostingSchema = {
       <h1>{post.data.title}</h1>
       <p class="article-description">{post.data.description}</p>
       {post.data.cover && <img src={post.data.cover} alt={post.data.title} class="article-cover" />}
-      <div class="article-content">
-        <Content />
+      <div class="article-layout">
+        <nav class="article-toc" aria-label="Table of contents">
+          <p>{lang === 'es' ? 'En este artículo' : lang === 'pt' ? 'Neste artigo' : 'In this article'}</p>
+          <ol>{tableOfContents.map(([label, href]) => <li><a href={href}>{label}</a></li>)}</ol>
+        </nav>
+        <div class="article-content">
+          <Content />
+        </div>
       </div>
       <a href={localizePath(lang, '/blog')} class="back-link">{t('blog.back')}</a>
     </article>
   </main>
+  <MermaidRenderer />
 </Layout>
 
 <style is:global>
   .article-card {
     padding: 1.8rem;
-    max-width: 860px;
+    max-width: 1080px;
     margin: 0 auto;
   }
-  .article-card h1 { margin: 0.4rem 0 0.8rem; font-size: clamp(2.3rem, 5vw, 4rem); }
+  .article-card h1 { margin: 0.4rem 0 0.8rem; max-width: 18ch; font-size: clamp(2.3rem, 5vw, 4.35rem); }
   .article-description { margin: 0; font-size: 1.1rem; color: rgba(45,37,32,0.75); }
   .post-date { margin: 0; color: var(--blue); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.74rem; }
   .article-cover {
@@ -73,8 +98,17 @@ const blogPostingSchema = {
     border-radius: 24px;
     margin: 1.5rem 0;
   }
-  .article-content { line-height: 1.85; font-size: 1.04rem; }
+  .article-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+  .article-toc { position: sticky; top: 7.5rem; padding-top: 1rem; border-top: 2px solid var(--blue); }
+  .article-toc p { margin: 0 0 0.8rem; color: var(--brown); font-weight: 700; }
+  .article-toc ol { display: grid; gap: 0.45rem; margin: 0; padding-left: 1.15rem; }
+  .article-toc a { color: rgba(45,37,32,0.76); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .article-toc a:hover { color: var(--blue); }
+  .article-content { min-width: 0; line-height: 1.85; font-size: 1.04rem; }
+  .article-content > h2:first-of-type,
+  .article-content > h2:first-of-type + ul { display: none; }
   .article-content h2, .article-content h3 { color: var(--blue); margin-top: 2rem; }
+  .article-content h2 { padding-top: 0.8rem; border-top: 1px solid rgba(70,112,142,0.2); font-size: clamp(1.7rem, 3vw, 2.35rem); }
   .article-content p, .article-content ul, .article-content ol, .article-content blockquote { margin: 0 0 1.2rem; }
   .article-content img {
     width: 100%;
@@ -88,11 +122,36 @@ const blogPostingSchema = {
     background: rgba(177,144,116,0.08);
     border-radius: 0 16px 16px 0;
   }
+  .article-content p:has(+ pre) { margin-bottom: 0.35rem; color: var(--brown); font-size: 0.88rem; }
+  .article-content pre {
+    overflow-x: auto;
+    padding: 1.2rem;
+    border-radius: 16px;
+    color: #f7f4ee;
+    background: #26333d;
+    border: 1px solid rgba(70,112,142,0.35);
+  }
+  .mermaid-diagram {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 18px;
+    background: #f7f4ee;
+    border: 1px solid rgba(70,112,142,0.28);
+  }
+  .mermaid-diagram svg { width: 100%; height: auto; min-width: 620px; }
   .back-link {
     display: inline-flex;
     margin-top: 1rem;
     text-decoration: none;
     color: var(--blue);
     font-weight: 600;
+  }
+  @media (max-width: 780px) {
+    .article-card { padding: 1.15rem; }
+    .article-layout { grid-template-columns: 1fr; }
+    .article-toc { position: static; padding: 1rem; border: 1px solid rgba(70,112,142,0.22); border-radius: 16px; background: rgba(70,112,142,0.06); }
+    .article-cover { border-radius: 16px; }
+    .mermaid-diagram { overflow-x: auto; }
   }
 </style>

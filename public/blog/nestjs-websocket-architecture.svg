@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">NestJS WebSocket JWT architecture</title>
+  <desc id="desc">An authenticated connection flows through middleware, an authentication service, a guard, and a gateway.</desc>
+  <rect width="1200" height="630" rx="36" fill="#f7f4ee"/>
+  <path d="M110 315H1090" stroke="#b19074" stroke-width="3" stroke-dasharray="10 14"/>
+  <g font-family="Inter,system-ui,sans-serif" text-anchor="middle">
+    <g transform="translate(170 315)"><circle r="74" fill="#46708e"/><text y="-6" fill="white" font-size="25" font-weight="700">Socket.IO</text><text y="26" fill="#f7f4ee" font-size="17">handshake</text></g>
+    <g transform="translate(455 315)"><rect x="-106" y="-69" width="212" height="138" rx="24" fill="#eee5da" stroke="#46708e" stroke-width="4"/><text y="-5" fill="#2d2520" font-size="24" font-weight="700">Middleware</text><text y="27" fill="#6f5542" font-size="17">autentica</text></g>
+    <g transform="translate(745 315)"><path d="M0-78 72-42 58 48 0 82-58 48-72-42Z" fill="#dde7ec" stroke="#46708e" stroke-width="4"/><text y="-5" fill="#2d2520" font-size="24" font-weight="700">Guard</text><text y="27" fill="#6f5542" font-size="17">autoriza</text></g>
+    <g transform="translate(1030 315)"><rect x="-96" y="-69" width="192" height="138" rx="69" fill="#3f735d"/><text y="-5" fill="white" font-size="24" font-weight="700">Gateway</text><text y="27" fill="#f7f4ee" font-size="17">rooms + events</text></g>
+    <text x="600" y="105" fill="#2d2520" font-size="48" font-weight="750">JWT antes del primer evento</text>
+    <text x="600" y="555" fill="#6f5542" font-size="22">NestJS · WebSockets · arquitectura con límites claros</text>
+  </g>
+</svg>

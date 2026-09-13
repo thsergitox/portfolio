@@ -37,7 +37,8 @@ const icons = {
         <p class="stacked-text">{profile.summary}</p>
       </div>
       <div class="hero-actions">
-        <a href="#cv-pdf-modal" class="pdf-link">{profile.pdfLabel}</a>
+        <a href="#cv-pdf-modal" class="pdf-link">{profile.pdf.label}</a>
+        <a href={profile.pdf.href} class="pdf-link" download>{profile.pdf.downloadLabel}</a>
       </div>
     </section>
 
@@ -56,7 +57,7 @@ const icons = {
         {profile.experience.map((job) => (
           <div class="cv-item">
             <div class="item-head">
-              <h3>{job.role} · {job.company}</h3>
+              <h3>{job.title}{job.organization ? ` · ${job.organization}` : ''}</h3>
               <span>{job.period}</span>
             </div>
             <ul>{job.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
@@ -69,17 +70,23 @@ const icons = {
         {profile.education.map((item) => (
           <div class="cv-item">
             <div class="item-head compact">
-              <h3>{item.place}</h3>
+              <h3>{item.title} · {item.organization}</h3>
               <span>{item.period}</span>
             </div>
-            <p>{item.detail}</p>
+            <ul>{item.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
           </div>
         ))}
       </article>
 
       <article class="section-card cv-card">
         <h2 class="gradient-title">{t('cv.projectsTitle')}</h2>
-        <ul>{profile.projects.map((project) => <li>{project}</li>)}</ul>
+        {profile.projects.map((project) => (
+          <div class="cv-item">
+            <div class="item-head compact"><h3>{project.title}</h3><span>{project.period}</span></div>
+            {project.stack && <p class="cv-stack">{project.stack}</p>}
+            <ul>{project.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+          </div>
+        ))}
       </article>
 
       <article class="section-card cv-card">
@@ -101,18 +108,33 @@ const icons = {
 
       <article class="section-card cv-card">
         <h2 class="gradient-title">{t('cv.awardsTitle')}</h2>
-        <ul>{profile.awards.map((award) => <li>{award}</li>)}</ul>
+        {profile.awards.map((award) => (
+          <div class="cv-item">
+            <div class="item-head compact"><h3>{award.title}</h3><span>{award.period}</span></div>
+            <ul>{award.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+          </div>
+        ))}
+      </article>
+
+      <article class="section-card cv-card full-span">
+        <h2 class="gradient-title">{t('cv.leadershipTitle')}</h2>
+        {profile.leadership.map((item) => (
+          <div class="cv-item">
+            <div class="item-head"><h3>{item.title} · {item.organization}</h3><span>{item.period}</span></div>
+            <ul>{item.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+          </div>
+        ))}
       </article>
     </section>
 
     <div id="cv-pdf-modal" class="pdf-modal">
-      <a href="#" class="pdf-backdrop" aria-label={profile.pdfClose}></a>
+      <a href="#" class="pdf-backdrop" aria-label={profile.pdf.closeLabel}></a>
       <div class="pdf-window section-card">
         <div class="pdf-toolbar">
-          <span>{profile.pdfLabel}</span>
-          <a href="#" class="pdf-close">{profile.pdfClose}</a>
+          <span>{profile.pdf.label}</span>
+          <a href="#" class="pdf-close">{profile.pdf.closeLabel}</a>
         </div>
-        <iframe src="/cv.pdf#view=FitH" title="CV PDF" class="pdf-frame"></iframe>
+        <iframe src={`${profile.pdf.href}#view=FitH`} title={profile.pdf.label} class="pdf-frame"></iframe>
       </div>
     </div>
   </main>
@@ -128,7 +150,7 @@ const icons = {
     gap: 1rem;
   }
   .cv-hero h1 { margin: 0; font-size: clamp(2rem, 4.2vw, 3.25rem); }
-  .cv-location {
+  .cv-location, .cv-stack {
     margin: 0.4rem 0 0;
     color: var(--brown);
     text-transform: uppercase;
