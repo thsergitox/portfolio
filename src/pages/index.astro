@@ -1,0 +1,230 @@
+---
+const progress = 7;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: "https://pezo.dev/",
+  mainEntity: {
+    "@id": "https://pezo.dev/#sergio-pezo",
+    "@type": "Person",
+    "name": "Sergio Sebastián Pezo Jiménez",
+    alternateName: "Sergio Pezo",
+    url: "https://pezo.dev/",
+    image: "https://pezo.dev/photo.jpeg",
+    jobTitle: "Software Engineer",
+    description:
+      "Ingeniero de software enfocado en backend, sistemas distribuidos, arquitectura de software y consultoría.",
+    knowsAbout: [
+      "Ingeniería de software",
+      "Desarrollo backend",
+      "Sistemas distribuidos",
+      "Arquitectura de software",
+      "Cloud computing",
+      "Inteligencia artificial",
+      "Consultoría de software",
+    ],
+    affiliation: {
+      "@type": "CollegeOrUniversity",
+      "name": "Universidad Nacional de Ingeniería",
+      url: "https://www.uni.edu.pe/",
+    },
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      "name": "Universidade Estadual de Campinas",
+      url: "https://unicamp.br/",
+    },
+    sameAs: [
+      "https://github.com/thsergitox",
+      "https://www.linkedin.com/in/sergio-pezo/",
+    ],
+  },
+};
+---
+
+<!doctype html>
+<html lang="es-PE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#e3dad5" />
+    <meta name="author" content="Sergio Sebastián Pezo Jiménez" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="description"
+      content="Sergio Sebastián Pezo Jiménez es ingeniero de software enfocado en backend, sistemas distribuidos, arquitectura, cloud, inteligencia artificial y consultoría de software."
+    />
+    <meta property="og:type" content="profile" />
+    <meta property="og:locale" content="es_PE" />
+    <meta property="og:site_name" content="Sergio Pezo" />
+    <meta property="og:title" content="Sergio Sebastián Pezo Jiménez | Ingeniero de software" />
+    <meta
+      property="og:description"
+      content="Ingeniería de software, backend, sistemas distribuidos, arquitectura, cloud e inteligencia artificial."
+    />
+    <meta property="og:url" content="https://pezo.dev/" />
+    <meta property="og:image" content="https://pezo.dev/photo.jpeg" />
+    <meta property="og:image:alt" content="Retrato de Sergio Sebastián Pezo Jiménez" />
+    <meta property="profile:first_name" content="Sergio Sebastián" />
+    <meta property="profile:last_name" content="Pezo Jiménez" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Sergio Sebastián Pezo Jiménez | Ingeniero de software" />
+    <meta
+      name="twitter:description"
+      content="Ingeniería de software, backend, sistemas distribuidos, arquitectura, cloud e inteligencia artificial."
+    />
+    <meta name="twitter:image" content="https://pezo.dev/photo.jpeg" />
+    <link rel="canonical" href="https://pezo.dev/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Sergio Sebastián Pezo Jiménez | Ingeniero de software</title>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+  </head>
+  <body>
+    <main>
+      <section class="building" aria-labelledby="name">
+        <div class="copy">
+          <h1 id="name">Sergio Pezo</h1>
+          <p class="status">is building</p>
+          <p class="identity">
+            Ingeniero de software enfocado en backend, sistemas distribuidos,
+            arquitectura, cloud, inteligencia artificial y consultoría de software.
+          </p>
+          <p class="education">
+            Estudiante de Ciencia de la Computación en la Universidad Nacional de
+            Ingeniería, con intercambio académico en la Universidade Estadual de Campinas.
+          </p>
+          <div
+            class="progress"
+            role="progressbar"
+            aria-label="Progreso del portfolio"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow={progress}
+          >
+            <span style={`--progress: ${progress}%`}></span>
+          </div>
+        </div>
+
+        <img
+          src="/photo.jpeg"
+          alt="Retrato de Sergio Sebastián Pezo Jiménez"
+          width="360"
+          height="411"
+        />
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    color-scheme: light;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #e3dad5;
+    color: #2d2520;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 12% 10%, rgba(70, 112, 142, 0.2), transparent 34rem),
+      linear-gradient(145deg, #e3dad5 0%, #e3cbaf 100%);
+  }
+
+  main {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 5vw, 4rem);
+  }
+
+  .building {
+    width: min(100%, 980px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 360px);
+    align-items: center;
+    gap: clamp(2rem, 7vw, 5rem);
+  }
+
+  .copy { min-width: 0; }
+
+  h1 {
+    max-width: 7ch;
+    margin: 0;
+    color: #46708e;
+    font-size: clamp(4rem, 11vw, 8rem);
+    font-weight: 750;
+    letter-spacing: -0.075em;
+    line-height: 0.82;
+  }
+
+  .status {
+    margin: 1.35rem 0 1.75rem;
+    color: #6f5542;
+    font-size: clamp(1.15rem, 2.5vw, 1.6rem);
+    letter-spacing: 0.04em;
+  }
+
+  .identity,
+  .education {
+    max-width: 38rem;
+    margin: 0;
+    color: #493d35;
+    font-size: clamp(0.94rem, 1.5vw, 1.08rem);
+    letter-spacing: 0;
+    line-height: 1.55;
+  }
+
+  .education {
+    margin-top: 0.65rem;
+    color: #6f5542;
+    font-size: clamp(0.82rem, 1.25vw, 0.94rem);
+  }
+
+  .progress {
+    width: min(100%, 24rem);
+    height: 0.38rem;
+    margin-top: 2rem;
+    overflow: hidden;
+    background: rgba(45, 37, 32, 0.16);
+  }
+
+  .progress span {
+    display: block;
+    width: var(--progress);
+    height: 100%;
+    background: #46708e;
+  }
+
+  img {
+    width: 100%;
+    aspect-ratio: 360 / 411;
+    object-fit: cover;
+    filter: saturate(0.78) contrast(1.04);
+    border: 1px solid rgba(111, 85, 66, 0.32);
+    box-shadow: 1.25rem 1.25rem 0 rgba(70, 112, 142, 0.14);
+  }
+
+  @media (max-width: 650px) {
+    main { padding: 2rem 1.25rem 3rem; }
+    .building { grid-template-columns: 1fr; gap: 2.75rem; }
+    .copy { text-align: center; }
+    h1 { max-width: none; font-size: clamp(3.75rem, 19vw, 6rem); }
+    .identity,
+    .education { margin-inline: auto; }
+    .progress { margin-inline: auto; }
+    img {
+      width: min(78vw, 20rem);
+      justify-self: center;
+      box-shadow: 0 1rem 0 rgba(70, 112, 142, 0.14);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; }
+  }
+</style>

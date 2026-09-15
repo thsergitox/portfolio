@@ -24,3 +24,6 @@ pnpm-debug.log*
 .idea/
 
 .vercel/
+
+# isolated feature worktrees
+.worktrees/

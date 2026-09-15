@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pezo.dev/sitemap-index.xml
+Sitemap: https://pezo.dev/sitemap.xml
